@@ -1,0 +1,77 @@
+# Interior Point Methods
+
+Inequality constrained minimization problems can be written as 
+
+\begin{align}
+    (\#eq:ineq-constrained-opt)
+    \text{minimize}& & f_0(x)  & & \\
+    \text{subject to}& & f_i(x) \leq 0, & & i = 1,\dots,m \\
+     & & Ax=b &
+\end{align}
+
+where $f_0,\dots,f_m:\mathbf{R}^n\rightarrow \mathbf R^n$ are convex and $\mathcal{C}^2$ differentiable, and $A\in \mathbf R^{p\times n}$ with $\mathbf{rank} A = p < n$ [@Boyd04book]. Assuming that the solution $x^*$ exists with the optimum value $p^* = f_0(x^*)$.
+
+## KKT conditions
+
+\begin{align}
+    (\#eq:ineq-constrained-kkt)
+    Ax^* = b, f_i(x^*) & \leq & 0 &, & i=1,\dots, m \\
+              \lambda^* & \leq & 0 & & \\
+    \nabla f_0(x^*) + \sum_{i=1}^{m} \lambda^*_i \nabla f_i(x^*) + A^Tv^* & = & 0 & & \\
+    \lambda^*_i f_i(x^*) & = & 0 &, & i=1,\dots,m
+\end{align}
+
+The KKT conditions \@ref(eq:ineq-constrained-kkt) means, respectively:
+
+1. All constraints are satisified at $x^*$;
+2. Corresponding Lagrange multiplier is sufficiently larger than zero;
+3. The gradient of the Lagrangian at $x^*$ is 0;
+4. Inequality constraints are either inactive or on the edge.
+
+## Logarithmic barrier function and central path
+
+The aim is to approximate \@ref(eq:ineq-constrained-opt) as an equality-constrained problem and apply Newton's method. This proposes the following formulation:
+\begin{align}
+    (\#eq:inequality-opt-rewrite)
+    \text{minimize}& & f_0(x) + \sum_{i=1}^m I_{-}(f_i(x)) \\
+    \text{subject to}& &  Ax = b,
+\end{align}
+where $I_{-} : \mathrm R \rightarrow \mathrm R$ is the indicator function
+\begin{equation}
+    (\#eq:indicator-nonpos)
+    I_{-}(u) = \begin{cases}
+        0 & u\leq 0 \\
+        \infty & u > 0.
+    \end{cases}
+\end{equation}
+
+However, it is obvious that \@ref(eq:inequality-opt-rewrite) is non-differentiable, so we cannot optimize it with Newton's method.
+
+### Logarithmic barrier
+
+We can replace $I_{-}$ \@ref(eq:indicator-nonpos) with another function:
+\begin{equation}
+    (\#eq:indicator-nonpos-approx)
+    \hat I_{-}(u) = -(1/t) \log (-u)
+\end{equation}
+
+```{python, include = FALSE}
+import matplotlib.pyplot as plt
+import numpy as np
+plt.rcParams["font.family"] = "serif"
+plt.rcParams['text.usetex'] = True
+```
+
+```{python, echo = FALSE, warning=FALSE, results = FALSE, fig.cap = "Logarithmic barrier"}
+u = np.linspace(-3, 1, 200)
+y1, y2, y3 = map(lambda t:-(1/t)*np.log(-u), (0.5, 1.0, 2.0))
+y4 = 20 * (u>=0)
+plt.plot(u, y1)
+plt.plot(u, y2)
+plt.plot(u, y3)
+plt.plot(u, y4, '-.')
+plt.ylim(-5,10)
+plt.show()
+```
+
+This will convert \@ref(eq:inequality-opt-rewrite)

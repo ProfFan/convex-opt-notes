@@ -1,0 +1,341 @@
+
+# Convex functions
+
+## Definition
+
+```{definition, convex-func}
+$f: \mathbf R^n \rightarrow \mathbf R$ is convex if $\mathbf{dom} f$ is a convex set and 
+\begin{equation}
+  (\#eq:jensen-inequality)
+  f(\underbrace{\theta x + (1-\theta) y}_\text{convex mixture}) \leq \theta f(x) + (1-\theta) f(y)
+\end{equation}
+for all $x, y \in \mathbf{dom} f$, $0\leq \theta \leq 1$.
+```
+
+i.e. "Any chord is above function".
+
+* $f$ is *concave* if $-f$ is convex.
+
+## Examples
+
+convex:
+
+* affine functions $ax+b$
+* exponential $e^{ax}$
+* powers: $x^a$ on $R_{++}$, for $a\geq 1$ or $a\leq 0$
+* powers of absolute value: $| x |^p$ on $R$, for $p\geq 1$
+* negative entropy: $x \log x$ on $R_{++}$
+
+concave:
+
+* affine functions $ax+b$ (lol!)
+* powers: $x^a$ on $R_{++}$, for $0 \leq a \leq 1$
+* log: $\log x$ on $R_{++}$
+
+## Examples on $R^n$ and $R^{m\times n}$
+
+Affine functions are both convex and concave; all norms are convex.
+
+### On $R^n$
+
+* affine: $a^Tx+b$
+* norms: $\| x \|_p = (\sum_{i=1}^n | x_i | ^p )^{1/p}$ for $p\geq 1$; $\| x\|_\infty = max_k |x_k|$
+
+### On $R^{m\times n}$ (matrices)
+
+Affine:
+\begin{align}
+  (\#eq:affine-matrix)
+  f(X) & = & \langle A, X \rangle + b \\
+       & = & \mathbf{tr}(A^TX) + b
+\end{align}
+
+Spectral norm (maximum singular value norm):
+\begin{align}
+  (\#eq:spectral-norm)
+  f(X)= \| X \|_2 = \sigma_{\mathrm{max}}(X) = (\lambda_{\mathrm{max}}(X^TX))^{1/2}
+\end{align}
+
+## Restriction of a convex function to a line
+
+```{theorem, convex-restriction}
+$f: \mathbf R^n \rightarrow \mathbf R$ is convex iff the function $g: \mathbf R \rightarrow \mathbf R$
+\begin{equation*}
+  g(t) = f(x + tv), \mathbf{dom} g = \{ t | x + tv \in \mathbf{dom} f \}
+\end{equation*}
+is convex in $t$ for any $x \in \mathbf{dom} f$, $v \in \mathbf R^n$.
+```
+
+This fact (\@ref(thm:convex-restriction))  is very important when speculating :) and proving whether a function is convex or concave.
+
+## Extension of a function outside of its domain
+
+extended-value extension $\bar f$ of $f$ is
+\begin{align}
+  (\#eq:extended-value-ext)
+  \bar f = f(x), x\in \mathbf{dom} f\\
+  \bar f = \infty, x \notin \mathbf{dom} f
+\end{align}
+
+This usually simplifies the notations when doing analysis.
+
+## 1st-order condition
+
+```{theorem, first-order-condition}
+differentiable $f$ with convex domain is convex iff
+\begin{equation*}
+  f(y) \geq f(x) + \nabla f(x)^T (y-x) \text{ for all } x,y \in \mathbf{dom} f
+\end{equation*}
+```
+
+i.e. the 1st-order Taylor expansion (**local**) is the **global** under-estimator for $f$.
+
+## 2nd-order conditions
+
+```{theorem, second-order-condition}
+twice differentiable $f$ with convex domain is convex iff
+\begin{equation*}
+  \nabla^2 f(x) \succeq 0 \text{ for all } x \in \mathbf{dom} f.
+\end{equation*}
+If (not iff) $\nabla^2 f(x) \succ 0$, then $f$ is strictly convex.
+```
+
+## Examples
+
+```{example}
+**quadratic function**: $f(x) = (1/2)x^TPx+ q^T x + r$ (with $P\in S^n$)
+\begin{equation*}
+  \nabla f(x) = Px+q, \nabla^2 f(x) = P
+\end{equation*}
+convex if $P\succeq 0$.
+```
+
+```{example}
+**least squares objective**: $f(x) = \|Ax-b\|^2_2$
+\begin{equation*}
+  \nabla f(x) = 2A^T(Ax-b), \nabla^2 f(x) = 2A^TA,
+\end{equation*}
+is convex.
+```
+
+```{example}
+**quadratic-over-linear**: $f(x,y) = x^2/y$
+\begin{equation*}
+  \nabla^2 f(x,y) = \frac 2 {y^3}\begin{bmatrix} y \\ -x \end{bmatrix}
+  \begin{bmatrix} y \\ -x \end{bmatrix}^T \succeq 0,
+\end{equation*}
+is convex if $y > 0$.
+```
+
+```{example, softmax}
+**log-sum-exp (softmax)**: $f(x) = \log \sum^n_{k=1} e^{x_k}$, $z_k = \exp x_k$
+\begin{equation*}
+  \nabla^2 f(x) = \text{<horrible mess>}
+  = \frac 1 {\mathbf{1}^{T}z} \mathbf{diag}(z) - \frac 1 {(\mathbf{1}^T z)^2}zz^T,
+\end{equation*}
+is convex.
+
+Proof is omitted, but very important!
+```
+
+## Epigraph and sublevel set
+
+```{definition, sublevel-set}
+**$\alpha$-sublevel set** of $f: \mathbf R^n \rightarrow \mathbf R$:
+\begin{equation*}
+  C_\alpha = \{ x\in \mathbf{dom} f | f(x) \leq \alpha \}
+\end{equation*}
+
+Sublevel sets of convex functions are convex (but not in reverse).
+```
+
+```{definition, epigraph}
+**epigraph** of $f: \mathbf R^n \rightarrow \mathbf R$:
+\begin{equation*}
+  \mathbf{epi} f = \{ (x,t) \in R^{n+1} | x\in \mathbf{dom} f, f(x) \leq t \}
+\end{equation*}
+
+$f$ is convex **iff** $\mathbf{epi} f$ is a convex set.
+```
+
+## Jensen's inequality
+
+An extension to \@ref(eq:jensen-inequality) is the Jensen's inequality for expectations:
+\begin{equation}
+  (\#eq:jensen-ineq-prob)
+  f(\mathbf E z) \leq \mathbf E f(z)
+\end{equation}
+for any random variable $z$.
+
+For a discrete distribution, \@ref(eq:jensen-inequality) reduces to equality $P(B) = 1 - P(A)$.
+
+## Positive weighted sum and composition with affine functions
+
+Note that if $f$ is convex, $f(Ax+b)$ is also convex.
+
+Examples:
+
+* log barrier: \begin{equation*}
+  f(x) = - \sum^m \log(b_i - a_i^Tx), \mathbf{dom} f = \{ x| a_i^Tx < b_i\}
+\end{equation*}
+
+## Pointwise maximum
+
+```{proposition, pointwise-max}
+if $f_1,\dots, f_m$ are convex, then $f(x) = max\{f_1(x), \dots, f_m(x)\}$ is convex.
+```
+
+```{example}
+piecewise-linear: $\max_{i=1,\dots,m}(a_i^Tx+b_i)$ is convex.
+```
+
+```{example}
+sum of $r$ largest components of $x\in R^n$:
+\begin{equation*}
+  f(x) = x_{[1]} + \cdots + x_{[r]}
+\end{equation*}
+is convex.
+
+Note: $f(x)$ can be seen as the max of $C_n^r$ sums.
+
+```
+
+## Pointwise supremum
+
+```{proposition}
+if $f(x,y)$ is convex in $x$ for each $y \in \mathcal A$, then
+\begin{equation}
+  (\#eq:pointwise-sup)
+  g(x) = \sup_{y\in \mathcal A} f(x, y)
+\end{equation}
+is convex.
+```
+
+```{example}
+support function of a set $C$: $S_C(x) = \sup_{y\in C}y^Tx$
+```
+
+```{example}
+max eigenvalue of symmetric matrix: for $X\in S^n$,
+\begin{equation}
+  (\#eq:max-eigen-sym-matrix)
+  \lambda_{max}(X) = \sup_{\|y\|_2=1}\underbrace{y^TXy}_{\text{linear in }X}
+\end{equation}
+ is convex.
+```
+
+## Composition {#convex-composition-scalar}
+
+\begin{equation}
+  (\#eq:convex-composition)
+  f(x) = h(g(x))
+\end{equation}
+
+* $f$ is convex if
+  * $g$ convex, $\tilde h$ convex and nondecreasing
+  * $g$ concave, $\tilde h$ convex and nonincreasing
+
+Note that $\tilde h$ is the **extended value function** so be careful!
+
+## Vector Composition
+
+Similar to \@ref(convex-composition-scalar)
+
+## Pointwise infinium
+
+```{proposition}
+if $f(x,y)$ is convex in $(x,y)$ and $C$ is a convex set, then
+\begin{equation}
+  (\#eq:pointwise-inf)
+  g(x) = \inf_{y\in \mathcal C} f(x, y)
+\end{equation}
+is convex.
+```
+
+```{example, schur-complement}
+**Schur complement** $f(x,y)  = x^TAx + 2x^TBy + y^TCy$ with
+\begin{equation}
+  (\#eq:pointwise-inf-schur-comp)
+  \begin{bmatrix}
+  A & B \\ B^T & C
+  \end{bmatrix} \succeq  0, C \succ 0
+\end{equation}
+
+minimizing over $y$ gives $g(x) = \inf_y f(x,y) = x^T(A-BC^{-1}B^T)x$ (Schur complement).
+
+$g$ is convex, thus the Schur complement $A-BC^{-1}B^T \succeq 0$.
+
+```
+
+```{example, dist-convex-set}
+**distance to a set**
+\begin{equation}
+  (\#eq:dist-convex-set)
+  \mathbf{dist}(x, S) = \inf_{y\in S} \|x-y\|
+\end{equation}
+ is convex if $S$ is convex.
+```
+
+## Perspective function
+
+```{definition, perspective-func}
+the **perspective** of a function $f: \mathbf R^n \rightarrow \mathbf R$ is the function $g: \mathbf R^n \times R \rightarrow \mathbf R$,
+\begin{equation}
+  g(x,t) = tf(x/t), \mathbf{dom} g = \{ (x,t) | x/t \in \mathbf{dom} f, t>0 \}
+\end{equation}
+$g$ is convex if f is convex.
+```
+
+```{example}
+$f(x) = x^Tx$ is convex, then $g(x, t) = x^Tx/t$ is convex for $t>0$.
+```
+
+```{example, negative-log}
+negative log $f(x) = -\log x$ is convex, thus the relative entropy
+\begin{equation}
+  (\#eq:relative-entropy)
+  g(x,t) = t\log t - t \log x
+\end{equation}
+is convex on $\mathbf R^2_{++}$. (This is related to KL divergence)
+```
+
+```{example}
+if $f$ convex, then
+\begin{equation}
+  (\#eq:mobius-transform)
+  g(x) = (c^Tx+d) f \left ( (Ax+b)/(c^Tx+d) \right )
+\end{equation}
+is convex on $\{ x | c^Tx+d > 0 , (Ax+b)/(c^Tx+d) \in \mathbf{dom} f \}$
+```
+
+## The conjugate function
+
+```{definition, conjugate}
+the **conjugate** of a function $f$ is
+\begin{equation}
+  (\#eq:conjugate)
+  f^*(y) = \sup_{x\in \mathbf{dom} f}(y^Tx-f(x))
+\end{equation}
+```
+
+Note that $f^*$ is convex regardless of what $f$ is.
+
+And an interesting fact is that
+\begin{equation}
+  \mathbf{epi} (f^{env}) = \mathbf{conv}(\mathbf{epi} f)
+\end{equation}
+(convex envelope)
+
+## Dummy
+
+Lorem
+
+Lorem
+Lorem
+
+Lorem
+
+$f: \mathbf R^n \rightarrow \mathbf R$
+$f: \mathbf R^n \rightarrow \mathbf R$
+$f: \mathbf R^n \rightarrow \mathbf R$
+$f: \mathbf R^n \rightarrow \mathbf R$

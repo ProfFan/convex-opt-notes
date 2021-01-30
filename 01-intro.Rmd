@@ -1,0 +1,109 @@
+# Introduction {#intro}
+
+## Notations
+
+* $\inf$ and $\sup$: similar to $\min$ and $\max$.
+
+## Generalized inequalities
+
+The generalized inequality (defined by a proper cone $K$) is written as
+\begin{equation}
+  (\#eq:gen-ineq)
+  x\preceq_{K} y \Longleftrightarrow y-x \in K
+\end{equation}
+
+The componentwise inequality ($K=R^n_+$) is written as
+\begin{equation}
+  (\#eq:comp-ineq)
+  x\preceq_{R_+^n} y \Longleftrightarrow x_i \leq y_i
+\end{equation}
+
+The matrix inequality ($K=S^n_+$) is written as
+\begin{equation}
+  (\#eq:matrix-ineq)
+  X\preceq_{S_+^n} Y \Longleftrightarrow Y - X \text{ positive definite }
+\end{equation}
+
+## Minimum and minimal elements
+
+```{definition, minimum-elem}
+$x\in S$ is **the minimum element** of $S$ with respect to $\preceq_K$ if
+\begin{equation}
+  (\#eq:minimum-elem)
+  y \in S \Longleftrightarrow x \preceq_K y
+\end{equation}
+```
+
+```{definition, minimal-elem}
+$x\in S$ is **a minimal element** of $S$ with respect to $\preceq_K$ if
+\begin{equation}
+  (\#eq:minimal-elem)
+  y \in S, y \preceq_K x \Longrightarrow y = x
+\end{equation}
+```
+
+* Minimum: all points are more
+* Minimal: no points are less
+
+## Separating hyperplane theorem
+
+```{theorem}
+if $C, D$ are disjoint convex sets, then there exists $a\neq 0$
+\begin{equation}
+  (\#eq:sep-hyperplance-thm)
+  a^Tx\leq b\text{ for } x\in C, a^T x \geq b \text{ for } x\in D
+\end{equation}
+```
+
+Note that this is not strict (both inequalities includes equality).
+
+### Supporting hyperplane theorem
+
+```{definition, supporting-hyperplane}
+**supporting hyperplane** to set $C$ at boundary point $x_0$:
+\begin{equation}
+  (\#eq:supporting-hyperplane)
+  \{ x | a^T x = a^T x_0 \}
+\end{equation}
+where $a \neq 0$ and $a^Tx \leq a^T x_0$ for all $x\in C$
+```
+
+```{theorem, supporting-hyperplane-thm}
+If $C$ is convex, then there *exists* a supporting hyperplane at every boundary point of $C$.
+```
+
+## Dual cones and generalized inequalities
+
+```{definition}
+**dual cone** of a cone $K$
+\begin{equation}
+  (\#eq:dual-cone)
+  K^* = \{ y | y^T x \geq 0 \text{ for all } x\in K\}
+\end{equation}
+```
+
+Examples:
+
+* $R^n_+$: $R^n_+$
+* $K = S_+^n$: $S_+^n$ ($<x,y> = Tr(XY)$)
+* $K = \{ (x, t) | \| x \|_2 \leq t \}$: $K = \{ (x, t) | \| x \|_2 \leq t \}$
+* $K = \{ (x, t) | \| x \|_1 \leq t \}$: $K = \{ (x, t) | \| x \|_\infty \leq t \}$
+
+Note that $(K^*)^* = K$ only if $K$ is proper.
+
+Also, since dual cones of proper cones are proper, this defines generalized inequalities:
+\begin{equation*}
+  y \succeq_K^* 0 \Longleftrightarrow y^Tx \geq 0 \text{ for all } x\succeq_K 0
+\end{equation*}
+
+## Minimum and minimal elements via dual inequalities
+
+```{theorem, minimum-elem-dual}
+$x\in S$ is **the minimum element** of $S$ with respect to $\preceq_K$ iff
+for all $\lambda \succ_{K^*} 0$, $x$ is the unique minimizer of $\lambda^T z$ over $S$.
+```
+
+```{theorem, minimal-elem-dual}
+$x\in S$ is **a minimal element** of $S$ with respect to $\preceq_K$ if
+$x$ minimizes $\lambda^Tz$ over $S$ for some $\lambda \succ_{K^*} 0$
+```
