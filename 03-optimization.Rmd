@@ -69,6 +69,9 @@ can be actually written as
 * $p^*=0$ if constraints are feasible
 * $p^*=\infty$ otherwise ($\inf \varnothing = \infty$)
 
+## Convex optimization
+
+
 
 ## Dummy
 
