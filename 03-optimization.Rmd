@@ -1,0 +1,85 @@
+# Optimization Problems
+
+## Optimization in standard form
+
+\begin{align}
+    (\#eq:generic-optimization)
+    \text{minimize}& & f_0(x) & & \\
+    \text{subject to} & & f_i(x) \leq 0 & , & i=1,\dots,m \\
+    & & h_i(x) = 0 & , & i=1,\dots,p
+\end{align}
+
+A standard form of describing optimization problems is \@ref(eq:generic-optimization), where
+
+* $x\in R^n$ is the optimization variable
+* $f_0: R^n \rightarrow R$ is the objective or cost function
+* $f_i: R^n \rightarrow R$ are the inequality constraints
+* $h_i: R^n \rightarrow R$ are the equality constraints
+
+For such a description, the optimal value is defined as
+\begin{equation}
+    (\#eq:optimal-value-generic)
+    p^* = \inf \{f_0(x) | f_i(x)\leq 0, h_i(x) = 0 \}.
+\end{equation}
+
+* When the problem is infeasible, $p^*=\infty$,
+* when it's unbounded below, $p^* = -\infty$.
+
+## Optimality and local optimality
+
+* **feasible**: in domain and satisfy all constraints
+* **optimal**: $f_0(x) = p^*$
+* **locally optimal**: exists $R>0$ that $x$ is optimal under $\| z-x \|_2 \leq R$.
+
+## Implicit constraints
+
+(\@ref(eq:generic-optimization)) has an **implicit constraint**
+\begin{equation}
+    (\#eq:implicit-constraint)
+    x\in \mathcal D = \bigcap_{i=0}^m \mathbf{dom} f_i \cup \bigcap_{i=1}^p \mathbf{dom} h_i
+\end{equation}
+
+* $\mathcal D$ is called the **domain** of the problem
+* a problem is **unconstrained** if it has no *explict* constraints ($m=p=0$)
+
+```{example}
+\begin{align}
+\text{minimize} & & f_0 = -\sum_{i=1}^k \log (b_i-a_i^Tx) 
+\end{align}
+is an unconstrained problem with *implicit constraint* of $a_i^Tx<b_i$.
+```
+
+
+## Feasibility problem
+
+\begin{align}
+    (\#eq:generic-feasibility)
+    \text{find}& & x & & \\
+    \text{subject to} & & f_i(x) \leq 0 & , & i=1,\dots,m \\
+    & & h_i(x) = 0 & , & i=1,\dots,p
+\end{align}
+can be actually written as
+\begin{align}
+    (\#eq:generic-feasibility-as-opt)
+    \text{minimize}& & 0 & & \\
+    \text{subject to} & & f_i(x) \leq 0 & , & i=1,\dots,m \\
+    & & h_i(x) = 0 & , & i=1,\dots,p
+\end{align}
+
+* $p^*=0$ if constraints are feasible
+* $p^*=\infty$ otherwise ($\inf \varnothing = \infty$)
+
+
+## Dummy
+
+Lorem
+
+Lorem
+Lorem
+
+Lorem
+
+$f: \mathbf R^n \rightarrow \mathbf R$
+$f: \mathbf R^n \rightarrow \mathbf R$
+$f: \mathbf R^n \rightarrow \mathbf R$
+$f: \mathbf R^n \rightarrow \mathbf R$

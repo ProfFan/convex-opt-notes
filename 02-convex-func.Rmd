@@ -326,16 +326,186 @@ And an interesting fact is that
 \end{equation}
 (convex envelope)
 
-## Dummy
+## Quasiconvexity
 
-Lorem
+```{definition, quasiconvex}
+$f: R^n \rightarrow R$ is *quasiconvex* (unimodal) if $\mathbf{dom} f$ is convex and the sublevel sets
+\begin{equation}
+  (\#eq:quasiconvex-def)
+  S_\alpha = \{ x\in \mathbf{dom} f | f(x) \leq \alpha \}
+\end{equation}
+are convex for all $\alpha$.
+```
 
-Lorem
-Lorem
+* $f$ is quasiconcave if $-f$ is quasiconvex
+* $f$ is quasilinear if it is both quasiconvex and quasiconcave
 
-Lorem
+### Examples
 
-$f: \mathbf R^n \rightarrow \mathbf R$
-$f: \mathbf R^n \rightarrow \mathbf R$
-$f: \mathbf R^n \rightarrow \mathbf R$
-$f: \mathbf R^n \rightarrow \mathbf R$
+* $\sqrt{|x|}$ is quasiconvex on $R$
+* $\mathrm{ceil}(x) = \inf \{ z\in Z | z \geq x \}$ is quasiconvex
+* $\log x$ is quasilinear on $R_{++}$
+* $f(x_1, x_2) = x_1 x_2$ is quasiconcave on $R^2_{++}$
+* linear fractional functions are quasilinear (!)
+* distance ratio
+  \begin{equation}
+    (\#eq:distance-ratio)
+    f(x) = \frac{\| x-a \|_2}{\| x-b \|_2},
+    \mathrm{dom}f=\{ x| \|x-a\|_2 \leq \| x-b \|_2 \}
+  \end{equation}
+  is quasiconvex
+
+Note that the sum of two quasiconvex functions are generally *not* quasiconvex.
+
+#### Internal rate of return (IRR)
+
+* cash flow $x=(x_0,\dots, x_n)$, $x_i$ is payment in period $i$
+* assume $x_0 < 0$ and $\sum x_n > 0$
+* present value of cash flow $x$ for interest rate $r$:
+  \begin{equation}
+    (\#eq:present-value-formula)
+    \mathrm{PV}(x,r) = \sum_{i=0}^{n} (1+r)^{-i}x_i
+  \end{equation}
+* IRR is smallest interest rate for which $PV(x,r) = 0$:
+  \begin{equation}
+    (\#eq:irr-formula)
+    \mathrm{IRR}(x) = \inf \{r \geq 0 | PV(x,r) = 0\}
+  \end{equation}
+* IRR is quasiconcave: superlevel set is intersection of halfspaces
+  \begin{equation}
+    (\#eq:irr-superlevel)
+    \mathrm{IRR}(x)\geq R \Longleftrightarrow \mathrm{PV}(x,r) \geq 0\text{ for } 0\leq r \leq R
+  \end{equation}
+
+## Properties of quasiconvex functions
+
+```{theorem, quasiconvex-jensen}
+**Jensen's inequality for quasiconvex functions**
+if $f$ quasiconvex, then
+\begin{equation}
+  (\#eq:quasiconvex-jensen)
+  0\leq \theta \leq 1 \Longrightarrow f(\theta x + (1- \theta)y) \leq
+  \max \{f(x), f(y) \}
+\end{equation}
+```
+
+This fact is shown in (\@ref(fig:jensen-quasi-plot)).
+
+```{python, include = FALSE}
+import matplotlib.pyplot as plt
+from matplotlib import collections as mc
+import numpy as np
+plt.rcParams["font.family"] = "serif"
+plt.rcParams['text.usetex'] = True
+```
+
+```{python jensen-quasi-plot, echo = FALSE, warning=FALSE, results = FALSE, fig.cap = "Jensen's inequality for quasiconvex functions"}
+fig, ax = plt.subplots(figsize=(5,3))
+u = np.linspace(-3, 3, 300)
+y1 = -(1.0-u)/(1+u**2)
+plt.plot(u, y1)
+lines = [
+  [(u[50], y1[200]), (u[200], y1[200])],
+  [(u[50], y1[50]), (u[50], y1[200])],
+  [(u[50], y1[50]), (u[200], y1[200])]
+]
+colors = np.array([(1, 0, 0, 1), (0, 1, 0, 1), (0,0,1,1)])
+linestyles = np.array(["solid", "solid", "dashed"])
+lc = mc.LineCollection(lines, colors=colors, linewidths=2, linestyles=linestyles)
+ax.add_collection(lc)
+# plt.ylim(-5,10)
+plt.show()
+```
+
+```{theorem, quasiconvex-first-order-cond}
+**first order condition**: differentiable $f$ with convex domain is quasiconvex **iff**
+\begin{equation}
+  (\#eq:quasiconvex-first-order-cond)
+  f(y)\leq f(x) \Longrightarrow \nabla f(x)^T (y-x) \leq 0
+\end{equation}
+```
+
+## Log-concavity
+
+* $\log f$ is concave
+* many probability densities are log-concave, e.g. the Gaussian
+  \begin{equation}
+    (\#eq:gaussian-distribution)
+    \frac 1 {\sqrt{(2\pi)^n \det \Sigma}} \exp (-\frac 1 2 (x-\bar x)^T\Sigma^{-1}(x-\bar x))
+  \end{equation}
+* cumulative Gaussian $\Phi$ is log-concave
+  \begin{equation}
+    (\#eq:cumulative-gaussian)
+    \Phi (x) = \frac 1 {\sqrt{2\pi}} \int_{-\infty}^x \exp(-u^2/2) du
+  \end{equation}
+
+### Properties
+
+```{proposition, log-concave-second-order}
+twice differentiable $f$ with convex domain is log-concave **iff**
+\begin{equation}
+  (\#eq:log-concave-second-order)
+  \nabla^2f(x) \preceq \frac {\nabla f(x) \nabla f(x)^T}{f(x)}
+\end{equation}
+```
+
+(\@ref(prp:log-concave-second-order)) basically says that you can have 1 positive eigenvalue for a log-concave function.
+
+* product of log-concave is still log-concave
+* sum, not really
+* integration: yes, see following (\@ref(prp:log-concave-integrate))
+
+```{proposition, log-concave-integrate}
+if $f: R^n \times R^m \rightarrow R$ is log-concave, then
+\begin{equation*}
+  g(x) = \int f(x,y) dy
+\end{equation*}
+is log-concave.
+```
+
+b/c (\@ref(prp:log-concave-integrate)), we have the follow interesting results:
+
+```{proposition}
+convolution preserves log-concavity:
+\begin{equation}
+  (\#eq:convolution-log-concave)
+  (f*g)(x) = \int f(x-y) g(y) dy
+\end{equation}
+is log-concave.
+```
+
+```{proposition, log-concave-pdf}
+if $C\subseteq R^n$ convex and $y$ is a random variable with log-concave pdf then
+\begin{equation}
+  (\#eq:log-concave-pdf)
+  f(x) = \mathbf{prob} (x+y\in C)
+\end{equation}
+is log-concave.
+```
+
+```{proof}
+
+\begin{equation*}
+  f(x) = \int g(x+y)p(y)dy, g(u) = \begin{cases}1 & u\in C \\ 0 & u\notin C \end{cases}
+\end{equation*}
+$p$ is pdf of $y$.
+```
+
+Note that \@ref(prp:log-concave-pdf) directly relates to the yield optimization problem in operational research.
+
+## Generic inequalities
+
+```{definition, k-convex}
+$f: \mathbf R^n \rightarrow \mathbf R^m$ is $K$-convex if $\mathbf{dom} f$ is a convex set and 
+\begin{equation}
+  (\#eq:jensen-inequality)
+  f(\theta x + (1-\theta) y) \preceq_K \theta f(x) + (1-\theta) f(y)
+\end{equation}
+for all $x, y \in \mathbf{dom} f$, $0\leq \theta \leq 1$.
+```
+
+One particularly interesting case is for matrices: $f: \mathbf S^n \rightarrow \mathbf S^m$.
+
+```{example}
+$f(X) = X^2$ is $S_+^m$-convex.
+```
