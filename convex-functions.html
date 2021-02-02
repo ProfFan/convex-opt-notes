@@ -24,7 +24,7 @@
 <meta name="author" content="Fan Jiang" />
 
 
-<meta name="date" content="2021-01-30" />
+<meta name="date" content="2021-02-02" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="intro.html"/>
-<link rel="next" href="linear-programs.html"/>
+<link rel="next" href="convex-optimization.html"/>
 <script src="libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -171,19 +171,49 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.16" data-path="convex-functions.html"><a href="convex-functions.html#pointwise-infinium"><i class="fa fa-check"></i><b>2.16</b> Pointwise infinium</a></li>
 <li class="chapter" data-level="2.17" data-path="convex-functions.html"><a href="convex-functions.html#perspective-function"><i class="fa fa-check"></i><b>2.17</b> Perspective function</a></li>
 <li class="chapter" data-level="2.18" data-path="convex-functions.html"><a href="convex-functions.html#the-conjugate-function"><i class="fa fa-check"></i><b>2.18</b> The conjugate function</a></li>
-<li class="chapter" data-level="2.19" data-path="convex-functions.html"><a href="convex-functions.html#dummy"><i class="fa fa-check"></i><b>2.19</b> Dummy</a></li>
+<li class="chapter" data-level="2.19" data-path="convex-functions.html"><a href="convex-functions.html#quasiconvexity"><i class="fa fa-check"></i><b>2.19</b> Quasiconvexity</a>
+<ul>
+<li class="chapter" data-level="2.19.1" data-path="convex-functions.html"><a href="convex-functions.html#examples-2"><i class="fa fa-check"></i><b>2.19.1</b> Examples</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="linear-programs.html"><a href="linear-programs.html"><i class="fa fa-check"></i><b>3</b> Linear Programs</a>
+<li class="chapter" data-level="2.20" data-path="convex-functions.html"><a href="convex-functions.html#properties-of-quasiconvex-functions"><i class="fa fa-check"></i><b>2.20</b> Properties of quasiconvex functions</a></li>
+<li class="chapter" data-level="2.21" data-path="convex-functions.html"><a href="convex-functions.html#log-concavity"><i class="fa fa-check"></i><b>2.21</b> Log-concavity</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="linear-programs.html"><a href="linear-programs.html#piecewise-linear-minimization"><i class="fa fa-check"></i><b>3.1</b> Piecewise linear minimization</a></li>
-<li class="chapter" data-level="3.2" data-path="linear-programs.html"><a href="linear-programs.html#chebyshev-center-of-a-polyhedron"><i class="fa fa-check"></i><b>3.2</b> Chebyshev center of a polyhedron</a></li>
+<li class="chapter" data-level="2.21.1" data-path="convex-functions.html"><a href="convex-functions.html#properties"><i class="fa fa-check"></i><b>2.21.1</b> Properties</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="interior-point-methods.html"><a href="interior-point-methods.html"><i class="fa fa-check"></i><b>4</b> Interior Point Methods</a>
+<li class="chapter" data-level="2.22" data-path="convex-functions.html"><a href="convex-functions.html#generic-inequalities"><i class="fa fa-check"></i><b>2.22</b> Generic inequalities</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="convex-optimization.html"><a href="convex-optimization.html"><i class="fa fa-check"></i><b>3</b> Convex Optimization</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="interior-point-methods.html"><a href="interior-point-methods.html#kkt-conditions"><i class="fa fa-check"></i><b>4.1</b> KKT conditions</a></li>
-<li class="chapter" data-level="4.2" data-path="interior-point-methods.html"><a href="interior-point-methods.html#logarithmic-barrier-function-and-central-path"><i class="fa fa-check"></i><b>4.2</b> Logarithmic barrier function and central path</a>
+<li class="chapter" data-level="3.1" data-path="convex-optimization.html"><a href="convex-optimization.html#optimization-in-standard-form"><i class="fa fa-check"></i><b>3.1</b> Optimization in standard form</a></li>
+<li class="chapter" data-level="3.2" data-path="convex-optimization.html"><a href="convex-optimization.html#optimality-and-local-optimality"><i class="fa fa-check"></i><b>3.2</b> Optimality and local optimality</a></li>
+<li class="chapter" data-level="3.3" data-path="convex-optimization.html"><a href="convex-optimization.html#implicit-constraints"><i class="fa fa-check"></i><b>3.3</b> Implicit constraints</a></li>
+<li class="chapter" data-level="3.4" data-path="convex-optimization.html"><a href="convex-optimization.html#feasibility-problem"><i class="fa fa-check"></i><b>3.4</b> Feasibility problem</a></li>
+<li class="chapter" data-level="3.5" data-path="convex-optimization.html"><a href="convex-optimization.html#convex-optimization-1"><i class="fa fa-check"></i><b>3.5</b> Convex optimization</a></li>
+<li class="chapter" data-level="3.6" data-path="convex-optimization.html"><a href="convex-optimization.html#optimality-in-convex-optimization"><i class="fa fa-check"></i><b>3.6</b> Optimality in convex optimization</a>
 <ul>
-<li class="chapter" data-level="4.2.1" data-path="interior-point-methods.html"><a href="interior-point-methods.html#logarithmic-barrier"><i class="fa fa-check"></i><b>4.2.1</b> Logarithmic barrier</a></li>
+<li class="chapter" data-level="3.6.1" data-path="convex-optimization.html"><a href="convex-optimization.html#optimality-criterion-for-differentiable-f_0"><i class="fa fa-check"></i><b>3.6.1</b> Optimality criterion for differentiable <span class="math inline">\(f_0\)</span></a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="convex-optimization.html"><a href="convex-optimization.html#equivalent-convex-problems"><i class="fa fa-check"></i><b>3.7</b> Equivalent convex problems</a>
+<ul>
+<li class="chapter" data-level="3.7.1" data-path="convex-optimization.html"><a href="convex-optimization.html#eliminating-equality-constraints"><i class="fa fa-check"></i><b>3.7.1</b> eliminating equality constraints</a></li>
+<li class="chapter" data-level="3.7.2" data-path="convex-optimization.html"><a href="convex-optimization.html#introducing-equality-constraints"><i class="fa fa-check"></i><b>3.7.2</b> Introducing equality constraints</a></li>
+<li class="chapter" data-level="3.7.3" data-path="convex-optimization.html"><a href="convex-optimization.html#introducing-slack-variables-for-linear-inequalities"><i class="fa fa-check"></i><b>3.7.3</b> Introducing slack variables for linear inequalities</a></li>
+<li class="chapter" data-level="3.7.4" data-path="convex-optimization.html"><a href="convex-optimization.html#the-epigraph-form-trick"><i class="fa fa-check"></i><b>3.7.4</b> The epigraph form (trick)</a></li>
+<li class="chapter" data-level="3.7.5" data-path="convex-optimization.html"><a href="convex-optimization.html#minimizing-over-some-variables"><i class="fa fa-check"></i><b>3.7.5</b> Minimizing over some variables</a></li>
+</ul></li>
+<li class="chapter" data-level="3.8" data-path="convex-optimization.html"><a href="convex-optimization.html#dummy"><i class="fa fa-check"></i><b>3.8</b> Dummy</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="linear-programs.html"><a href="linear-programs.html"><i class="fa fa-check"></i><b>4</b> Linear Programs</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="linear-programs.html"><a href="linear-programs.html#piecewise-linear-minimization"><i class="fa fa-check"></i><b>4.1</b> Piecewise linear minimization</a></li>
+<li class="chapter" data-level="4.2" data-path="linear-programs.html"><a href="linear-programs.html#chebyshev-center-of-a-polyhedron"><i class="fa fa-check"></i><b>4.2</b> Chebyshev center of a polyhedron</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="interior-point-methods.html"><a href="interior-point-methods.html"><i class="fa fa-check"></i><b>5</b> Interior Point Methods</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="interior-point-methods.html"><a href="interior-point-methods.html#kkt-conditions"><i class="fa fa-check"></i><b>5.1</b> KKT conditions</a></li>
+<li class="chapter" data-level="5.2" data-path="interior-point-methods.html"><a href="interior-point-methods.html#logarithmic-barrier-function-and-central-path"><i class="fa fa-check"></i><b>5.2</b> Logarithmic barrier function and central path</a>
+<ul>
+<li class="chapter" data-level="5.2.1" data-path="interior-point-methods.html"><a href="interior-point-methods.html#logarithmic-barrier"><i class="fa fa-check"></i><b>5.2.1</b> Logarithmic barrier</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
@@ -535,16 +565,175 @@ is convex on <span class="math inline">\(\{ x | c^Tx+d &gt; 0 , (Ax+b)/(c^Tx+d) 
 \end{equation}\]</span>
 (convex envelope)</p>
 </div>
-<div id="dummy" class="section level2" number="2.19">
-<h2><span class="header-section-number">2.19</span> Dummy</h2>
-<p>Lorem</p>
-<p>Lorem
-Lorem</p>
-<p>Lorem</p>
-<p><span class="math inline">\(f: \mathbf R^n \rightarrow \mathbf R\)</span>
-<span class="math inline">\(f: \mathbf R^n \rightarrow \mathbf R\)</span>
-<span class="math inline">\(f: \mathbf R^n \rightarrow \mathbf R\)</span>
-<span class="math inline">\(f: \mathbf R^n \rightarrow \mathbf R\)</span></p>
+<div id="quasiconvexity" class="section level2" number="2.19">
+<h2><span class="header-section-number">2.19</span> Quasiconvexity</h2>
+
+<div class="definition">
+<span id="def:quasiconvex" class="definition"><strong>Definition 2.6  </strong></span><span class="math inline">\(f: R^n \rightarrow R\)</span> is <em>quasiconvex</em> (unimodal) if <span class="math inline">\(\mathbf{dom} f\)</span> is convex and the sublevel sets
+<span class="math display" id="eq:quasiconvex-def">\[\begin{equation}
+  \tag{2.15}
+  S_\alpha = \{ x\in \mathbf{dom} f | f(x) \leq \alpha \}
+\end{equation}\]</span>
+are convex for all <span class="math inline">\(\alpha\)</span>.
+</div>
+<ul>
+<li><span class="math inline">\(f\)</span> is quasiconcave if <span class="math inline">\(-f\)</span> is quasiconvex</li>
+<li><span class="math inline">\(f\)</span> is quasilinear if it is both quasiconvex and quasiconcave</li>
+</ul>
+<div id="examples-2" class="section level3" number="2.19.1">
+<h3><span class="header-section-number">2.19.1</span> Examples</h3>
+<ul>
+<li><span class="math inline">\(\sqrt{|x|}\)</span> is quasiconvex on <span class="math inline">\(R\)</span></li>
+<li><span class="math inline">\(\mathrm{ceil}(x) = \inf \{ z\in Z | z \geq x \}\)</span> is quasiconvex</li>
+<li><span class="math inline">\(\log x\)</span> is quasilinear on <span class="math inline">\(R_{++}\)</span></li>
+<li><span class="math inline">\(f(x_1, x_2) = x_1 x_2\)</span> is quasiconcave on <span class="math inline">\(R^2_{++}\)</span></li>
+<li>linear fractional functions are quasilinear (!)</li>
+<li>distance ratio
+<span class="math display" id="eq:distance-ratio">\[\begin{equation}
+  \tag{2.16}
+  f(x) = \frac{\| x-a \|_2}{\| x-b \|_2},
+  \mathrm{dom}f=\{ x| \|x-a\|_2 \leq \| x-b \|_2 \}
+\end{equation}\]</span>
+is quasiconvex</li>
+</ul>
+<p>Note that the sum of two quasiconvex functions are generally <em>not</em> quasiconvex.</p>
+<div id="internal-rate-of-return-irr" class="section level4" number="2.19.1.1">
+<h4><span class="header-section-number">2.19.1.1</span> Internal rate of return (IRR)</h4>
+<ul>
+<li>cash flow <span class="math inline">\(x=(x_0,\dots, x_n)\)</span>, <span class="math inline">\(x_i\)</span> is payment in period <span class="math inline">\(i\)</span></li>
+<li>assume <span class="math inline">\(x_0 &lt; 0\)</span> and <span class="math inline">\(\sum x_n &gt; 0\)</span></li>
+<li>present value of cash flow <span class="math inline">\(x\)</span> for interest rate <span class="math inline">\(r\)</span>:
+<span class="math display" id="eq:present-value-formula">\[\begin{equation}
+  \tag{2.17}
+  \mathrm{PV}(x,r) = \sum_{i=0}^{n} (1+r)^{-i}x_i
+\end{equation}\]</span></li>
+<li>IRR is smallest interest rate for which <span class="math inline">\(PV(x,r) = 0\)</span>:
+<span class="math display" id="eq:irr-formula">\[\begin{equation}
+  \tag{2.18}
+  \mathrm{IRR}(x) = \inf \{r \geq 0 | PV(x,r) = 0\}
+\end{equation}\]</span></li>
+<li>IRR is quasiconcave: superlevel set is intersection of halfspaces
+<span class="math display" id="eq:irr-superlevel">\[\begin{equation}
+  \tag{2.19}
+  \mathrm{IRR}(x)\geq R \Longleftrightarrow \mathrm{PV}(x,r) \geq 0\text{ for } 0\leq r \leq R
+\end{equation}\]</span></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="properties-of-quasiconvex-functions" class="section level2" number="2.20">
+<h2><span class="header-section-number">2.20</span> Properties of quasiconvex functions</h2>
+
+<div class="theorem">
+<span id="thm:quasiconvex-jensen" class="theorem"><strong>Theorem 2.4  </strong></span><strong>Jensen’s inequality for quasiconvex functions</strong>
+if <span class="math inline">\(f\)</span> quasiconvex, then
+<span class="math display" id="eq:quasiconvex-jensen">\[\begin{equation}
+  \tag{2.20}
+  0\leq \theta \leq 1 \Longrightarrow f(\theta x + (1- \theta)y) \leq
+  \max \{f(x), f(y) \}
+\end{equation}\]</span>
+</div>
+<p>This fact is shown in (<a href="convex-functions.html#fig:jensen-quasi-plot">2.1</a>).</p>
+<div class="figure"><span id="fig:jensen-quasi-plot"></span>
+<img src="MMAE_FG_files/figure-html/jensen-quasi-plot-1.png" alt="Jensen's inequality for quasiconvex functions"  />
+<p class="caption">
+Figure 2.1: Jensen’s inequality for quasiconvex functions
+</p>
+</div>
+
+<div class="theorem">
+<span id="thm:quasiconvex-first-order-cond" class="theorem"><strong>Theorem 2.5  </strong></span><strong>first order condition</strong>: differentiable <span class="math inline">\(f\)</span> with convex domain is quasiconvex <strong>iff</strong>
+<span class="math display" id="eq:quasiconvex-first-order-cond">\[\begin{equation}
+  \tag{2.21}
+  f(y)\leq f(x) \Longrightarrow \nabla f(x)^T (y-x) \leq 0
+\end{equation}\]</span>
+</div>
+</div>
+<div id="log-concavity" class="section level2" number="2.21">
+<h2><span class="header-section-number">2.21</span> Log-concavity</h2>
+<ul>
+<li><span class="math inline">\(\log f\)</span> is concave</li>
+<li>many probability densities are log-concave, e.g. the Gaussian
+<span class="math display" id="eq:gaussian-distribution">\[\begin{equation}
+  \tag{2.22}
+  \frac 1 {\sqrt{(2\pi)^n \det \Sigma}} \exp (-\frac 1 2 (x-\bar x)^T\Sigma^{-1}(x-\bar x))
+\end{equation}\]</span></li>
+<li>cumulative Gaussian <span class="math inline">\(\Phi\)</span> is log-concave
+<span class="math display" id="eq:cumulative-gaussian">\[\begin{equation}
+  \tag{2.23}
+  \Phi (x) = \frac 1 {\sqrt{2\pi}} \int_{-\infty}^x \exp(-u^2/2) du
+\end{equation}\]</span></li>
+</ul>
+<div id="properties" class="section level3" number="2.21.1">
+<h3><span class="header-section-number">2.21.1</span> Properties</h3>
+
+<div class="proposition">
+<span id="prp:log-concave-second-order" class="proposition"><strong>Proposition 2.4  </strong></span>twice differentiable <span class="math inline">\(f\)</span> with convex domain is log-concave <strong>iff</strong>
+<span class="math display" id="eq:log-concave-second-order">\[\begin{equation}
+  \tag{2.24}
+  \nabla^2f(x) \preceq \frac {\nabla f(x) \nabla f(x)^T}{f(x)}
+\end{equation}\]</span>
+</div>
+<p>(<a href="convex-functions.html#prp:log-concave-second-order">2.4</a>) basically says that you can have 1 positive eigenvalue for a log-concave function.</p>
+<ul>
+<li>product of log-concave is still log-concave</li>
+<li>sum, not really</li>
+<li>integration: yes, see following (<a href="convex-functions.html#prp:log-concave-integrate">2.5</a>)</li>
+</ul>
+
+<div class="proposition">
+<span id="prp:log-concave-integrate" class="proposition"><strong>Proposition 2.5  </strong></span>if <span class="math inline">\(f: R^n \times R^m \rightarrow R\)</span> is log-concave, then
+<span class="math display">\[\begin{equation*}
+  g(x) = \int f(x,y) dy
+\end{equation*}\]</span>
+is log-concave.
+</div>
+<p>b/c (<a href="convex-functions.html#prp:log-concave-integrate">2.5</a>), we have the follow interesting results:</p>
+
+<div class="proposition">
+<span id="prp:unnamed-chunk-17" class="proposition"><strong>Proposition 2.6  </strong></span>convolution preserves log-concavity:
+<span class="math display" id="eq:convolution-log-concave">\[\begin{equation}
+  \tag{2.25}
+  (f*g)(x) = \int f(x-y) g(y) dy
+\end{equation}\]</span>
+is log-concave.
+</div>
+
+<div class="proposition">
+<span id="prp:log-concave-pdf" class="proposition"><strong>Proposition 2.7  </strong></span>if <span class="math inline">\(C\subseteq R^n\)</span> convex and <span class="math inline">\(y\)</span> is a random variable with log-concave pdf then
+<span class="math display" id="eq:log-concave-pdf">\[\begin{equation}
+  \tag{2.26}
+  f(x) = \mathbf{prob} (x+y\in C)
+\end{equation}\]</span>
+is log-concave.
+</div>
+
+<div class="proof">
+ <span class="proof"><em>Proof. </em></span> 
+<span class="math display">\[\begin{equation*}
+  f(x) = \int g(x+y)p(y)dy, g(u) = \begin{cases}1 &amp; u\in C \\ 0 &amp; u\notin C \end{cases}
+\end{equation*}\]</span>
+<span class="math inline">\(p\)</span> is pdf of <span class="math inline">\(y\)</span>.
+</div>
+<p>Note that <a href="convex-functions.html#prp:log-concave-pdf">2.7</a> directly relates to the yield optimization problem in operational research.</p>
+</div>
+</div>
+<div id="generic-inequalities" class="section level2" number="2.22">
+<h2><span class="header-section-number">2.22</span> Generic inequalities</h2>
+
+<div class="definition">
+<span id="def:k-convex" class="definition"><strong>Definition 2.7  </strong></span><span class="math inline">\(f: \mathbf R^n \rightarrow \mathbf R^m\)</span> is <span class="math inline">\(K\)</span>-convex if <span class="math inline">\(\mathbf{dom} f\)</span> is a convex set and
+<span class="math display" id="eq:jensen-inequality-k-convex">\[\begin{equation}
+  \tag{2.27}
+  f(\theta x + (1-\theta) y) \preceq_K \theta f(x) + (1-\theta) f(y)
+\end{equation}\]</span>
+for all <span class="math inline">\(x, y \in \mathbf{dom} f\)</span>, <span class="math inline">\(0\leq \theta \leq 1\)</span>.
+</div>
+<p>One particularly interesting case is for matrices: <span class="math inline">\(f: \mathbf S^n \rightarrow \mathbf S^m\)</span>.</p>
+
+<div class="example">
+<span id="exm:unnamed-chunk-19" class="example"><strong>Example 2.14  </strong></span><span class="math inline">\(f(X) = X^2\)</span> is <span class="math inline">\(S_+^m\)</span>-convex.
+</div>
 
 </div>
 </div>
@@ -554,7 +743,7 @@ Lorem</p>
         </div>
       </div>
 <a href="intro.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="linear-programs.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="convex-optimization.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

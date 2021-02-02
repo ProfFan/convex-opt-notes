@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 5 Interior Point Methods | Convex Optimization Notes</title>
+  <title>Chapter 3 Convex Optimization | Convex Optimization Notes</title>
   <meta name="description" content="This is my notes while studying Prof. Stephen Boyd’s convex optimization course." />
   <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 5 Interior Point Methods | Convex Optimization Notes" />
+  <meta property="og:title" content="Chapter 3 Convex Optimization | Convex Optimization Notes" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 5 Interior Point Methods | Convex Optimization Notes" />
+  <meta name="twitter:title" content="Chapter 3 Convex Optimization | Convex Optimization Notes" />
   
   <meta name="twitter:description" content="This is my notes while studying Prof. Stephen Boyd’s convex optimization course." />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="linear-programs.html"/>
-<link rel="next" href="references.html"/>
+<link rel="prev" href="convex-functions.html"/>
+<link rel="next" href="linear-programs.html"/>
 <script src="libs/header-attrs-2.6/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -237,66 +237,262 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="interior-point-methods" class="section level1" number="5">
-<h1><span class="header-section-number">Chapter 5</span> Interior Point Methods</h1>
-<p>Inequality constrained minimization problems can be written as</p>
-<p><span class="math display" id="eq:ineq-constrained-opt">\[\begin{align}
-    \tag{5.1}
-    \text{minimize}&amp; &amp; f_0(x)  &amp; &amp; \\
-    \text{subject to}&amp; &amp; f_i(x) \leq 0, &amp; &amp; i = 1,\dots,m \\
-     &amp; &amp; Ax=b &amp;
+<div id="convex-optimization" class="section level1" number="3">
+<h1><span class="header-section-number">Chapter 3</span> Convex Optimization</h1>
+<div id="optimization-in-standard-form" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Optimization in standard form</h2>
+<p><span class="math display" id="eq:generic-optimization">\[\begin{align}
+    \tag{3.1}
+    \text{minimize}&amp; &amp; f_0(x) &amp; &amp; \\
+    \text{subject to} &amp; &amp; f_i(x) \leq 0 &amp; , &amp; i=1,\dots,m \\
+    &amp; &amp; h_i(x) = 0 &amp; , &amp; i=1,\dots,p
 \end{align}\]</span></p>
-<p>where <span class="math inline">\(f_0,\dots,f_m:\mathbf{R}^n\rightarrow \mathbf R^n\)</span> are convex and <span class="math inline">\(\mathcal{C}^2\)</span> differentiable, and <span class="math inline">\(A\in \mathbf R^{p\times n}\)</span> with <span class="math inline">\(\mathbf{rank} A = p &lt; n\)</span> <span class="citation">(<a href="references.html#ref-Boyd04book" role="doc-biblioref">Boyd and Vandenberghe 2004</a>)</span>. Assuming that the solution <span class="math inline">\(x^*\)</span> exists with the optimum value <span class="math inline">\(p^* = f_0(x^*)\)</span>.</p>
-<div id="kkt-conditions" class="section level2" number="5.1">
-<h2><span class="header-section-number">5.1</span> KKT conditions</h2>
-<p><span class="math display" id="eq:ineq-constrained-kkt">\[\begin{align}
-    \tag{5.2}
-    Ax^* = b, f_i(x^*) &amp; \leq &amp; 0 &amp;, &amp; i=1,\dots, m \\
-              \lambda^* &amp; \leq &amp; 0 &amp; &amp; \\
-    \nabla f_0(x^*) + \sum_{i=1}^{m} \lambda^*_i \nabla f_i(x^*) + A^Tv^* &amp; = &amp; 0 &amp; &amp; \\
-    \lambda^*_i f_i(x^*) &amp; = &amp; 0 &amp;, &amp; i=1,\dots,m
-\end{align}\]</span></p>
-<p>The KKT conditions <a href="interior-point-methods.html#eq:ineq-constrained-kkt">(5.2)</a> means, respectively:</p>
-<ol style="list-style-type: decimal">
-<li>All constraints are satisified at <span class="math inline">\(x^*\)</span>;</li>
-<li>Corresponding Lagrange multiplier is sufficiently larger than zero;</li>
-<li>The gradient of the Lagrangian at <span class="math inline">\(x^*\)</span> is 0;</li>
-<li>Inequality constraints are either inactive or on the edge.</li>
-</ol>
-</div>
-<div id="logarithmic-barrier-function-and-central-path" class="section level2" number="5.2">
-<h2><span class="header-section-number">5.2</span> Logarithmic barrier function and central path</h2>
-<p>The aim is to approximate <a href="interior-point-methods.html#eq:ineq-constrained-opt">(5.1)</a> as an equality-constrained problem and apply Newton’s method. This proposes the following formulation:
-<span class="math display" id="eq:inequality-opt-rewrite">\[\begin{align}
-    \tag{5.3}
-    \text{minimize}&amp; &amp; f_0(x) + \sum_{i=1}^m I_{-}(f_i(x)) \\
-    \text{subject to}&amp; &amp;  Ax = b,
-\end{align}\]</span>
-where <span class="math inline">\(I_{-} : \mathrm R \rightarrow \mathrm R\)</span> is the indicator function
-<span class="math display" id="eq:indicator-nonpos">\[\begin{equation}
-    \tag{5.4}
-    I_{-}(u) = \begin{cases}
-        0 &amp; u\leq 0 \\
-        \infty &amp; u &gt; 0.
-    \end{cases}
+<p>A standard form of describing optimization problems is <a href="convex-optimization.html#eq:generic-optimization">(3.1)</a>, where</p>
+<ul>
+<li><span class="math inline">\(x\in R^n\)</span> is the optimization variable</li>
+<li><span class="math inline">\(f_0: R^n \rightarrow R\)</span> is the objective or cost function</li>
+<li><span class="math inline">\(f_i: R^n \rightarrow R\)</span> are the inequality constraints</li>
+<li><span class="math inline">\(h_i: R^n \rightarrow R\)</span> are the equality constraints</li>
+</ul>
+<p>For such a description, the optimal value is defined as
+<span class="math display" id="eq:optimal-value-generic">\[\begin{equation}
+    \tag{3.2}
+    p^* = \inf \{f_0(x) | f_i(x)\leq 0, h_i(x) = 0 \}.
 \end{equation}\]</span></p>
-<p>However, it is obvious that <a href="interior-point-methods.html#eq:inequality-opt-rewrite">(5.3)</a> is non-differentiable, so we cannot optimize it with Newton’s method.</p>
-<div id="logarithmic-barrier" class="section level3" number="5.2.1">
-<h3><span class="header-section-number">5.2.1</span> Logarithmic barrier</h3>
-<p>We can replace <span class="math inline">\(I_{-}\)</span> <a href="interior-point-methods.html#eq:indicator-nonpos">(5.4)</a> with another function:
-<span class="math display" id="eq:indicator-nonpos-approx">\[\begin{equation}
-    \tag{5.5}
-    \hat I_{-}(u) = -(1/t) \log (-u)
-\end{equation}\]</span></p>
-<div class="figure"><span id="fig:unnamed-chunk-26"></span>
-<img src="MMAE_FG_files/figure-html/unnamed-chunk-26-1.png" alt="Logarithmic barrier"  />
-<p class="caption">
-Figure 5.1: Logarithmic barrier
-</p>
+<ul>
+<li>When the problem is infeasible, <span class="math inline">\(p^*=\infty\)</span>,</li>
+<li>when it’s unbounded below, <span class="math inline">\(p^* = -\infty\)</span>.</li>
+</ul>
 </div>
-<p>This will convert <a href="interior-point-methods.html#eq:inequality-opt-rewrite">(5.3)</a></p>
+<div id="optimality-and-local-optimality" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Optimality and local optimality</h2>
+<ul>
+<li><strong>feasible</strong>: in domain and satisfy all constraints</li>
+<li><strong>optimal</strong>: <span class="math inline">\(f_0(x) = p^*\)</span></li>
+<li><strong>locally optimal</strong>: exists <span class="math inline">\(R&gt;0\)</span> that <span class="math inline">\(x\)</span> is optimal under <span class="math inline">\(\| z-x \|_2 \leq R\)</span>.</li>
+</ul>
+</div>
+<div id="implicit-constraints" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Implicit constraints</h2>
+<p>(<a href="convex-optimization.html#eq:generic-optimization">(3.1)</a>) has an <strong>implicit constraint</strong>
+<span class="math display" id="eq:implicit-constraint">\[\begin{equation}
+    \tag{3.3}
+    x\in \mathcal D = \bigcap_{i=0}^m \mathbf{dom} f_i \cup \bigcap_{i=1}^p \mathbf{dom} h_i
+\end{equation}\]</span></p>
+<ul>
+<li><span class="math inline">\(\mathcal D\)</span> is called the <strong>domain</strong> of the problem</li>
+<li>a problem is <strong>unconstrained</strong> if it has no <em>explict</em> constraints (<span class="math inline">\(m=p=0\)</span>)</li>
+</ul>
 
+<div class="example">
+<span id="exm:unnamed-chunk-20" class="example"><strong>Example 3.1  </strong></span><span class="math display">\[\begin{align}
+\text{minimize} &amp; &amp; f_0 = -\sum_{i=1}^k \log (b_i-a_i^Tx) 
+\end{align}\]</span>
+is an unconstrained problem with <em>implicit constraint</em> of <span class="math inline">\(a_i^Tx&lt;b_i\)</span>.
 </div>
+</div>
+<div id="feasibility-problem" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> Feasibility problem</h2>
+<p><span class="math display" id="eq:generic-feasibility">\[\begin{align}
+    \tag{3.4}
+    \text{find}&amp; &amp; x &amp; &amp; \\
+    \text{subject to} &amp; &amp; f_i(x) \leq 0 &amp; , &amp; i=1,\dots,m \\
+    &amp; &amp; h_i(x) = 0 &amp; , &amp; i=1,\dots,p
+\end{align}\]</span>
+can be actually written as
+<span class="math display" id="eq:generic-feasibility-as-opt">\[\begin{align}
+    \tag{3.5}
+    \text{minimize}&amp; &amp; 0 &amp; &amp; \\
+    \text{subject to} &amp; &amp; f_i(x) \leq 0 &amp; , &amp; i=1,\dots,m \\
+    &amp; &amp; h_i(x) = 0 &amp; , &amp; i=1,\dots,p
+\end{align}\]</span></p>
+<ul>
+<li><span class="math inline">\(p^*=0\)</span> if constraints are feasible</li>
+<li><span class="math inline">\(p^*=\infty\)</span> otherwise (<span class="math inline">\(\inf \varnothing = \infty\)</span>)</li>
+</ul>
+</div>
+<div id="convex-optimization-1" class="section level2" number="3.5">
+<h2><span class="header-section-number">3.5</span> Convex optimization</h2>
+<p><span class="math display" id="eq:convex-optimization">\[\begin{align}
+    \tag{3.6}
+    \text{minimize}&amp; &amp; f_0(x) &amp; &amp; \\
+    \text{subject to} &amp; &amp; f_i(x) \leq 0 &amp; , &amp; i=1,\dots,m \\
+    &amp; &amp; Ax=b &amp; &amp; 
+\end{align}\]</span></p>
+<p>Boyd defines convex optimization to be:</p>
+<ul>
+<li><span class="math inline">\(f_i\)</span> are all convex, equality constraints are all affine.</li>
+<li>also can define quasiconvex problems where <span class="math inline">\(f_0\)</span> is quasiconvex, and <span class="math inline">\(f_i (i&gt;0)\)</span> are convex.</li>
+</ul>
+<p>Note that the feasible set of a convex optimization problem is convex.</p>
+
+<div class="example">
+<p><span id="exm:unnamed-chunk-21" class="example"><strong>Example 3.2  </strong></span><span class="math display">\[\begin{align}
+    \text{minimize}&amp; &amp; f_0(x)=x_1^2+x_2^2 &amp; \\
+    \text{subject to} &amp; &amp; f_i(x)=x_1/(1+x_2^2) \leq 0 &amp;  \\
+    &amp; &amp; h_1(x) = (x_1 + x_2)^2=0 &amp; 
+\end{align}\]</span></p>
+<ul>
+<li><span class="math inline">\(f_0\)</span> is convex, feasible set <span class="math inline">\(\{ x_1 = -x_2 \}\)</span> is also convex</li>
+<li><em>however</em> not a convex problem according to <a href="convex-optimization.html#eq:convex-optimization">(3.6)</a></li>
+<li>we can rewrite to equivalent (not identical) convex problem
+<span class="math display">\[\begin{align}
+  \text{minimize}&amp; &amp; f_0(x)=x_1^2+x_2^2 &amp; \\
+  \text{subject to} &amp; &amp; x_1 \leq 0 &amp;  \\
+  &amp; &amp; h_1(x) = x_1 + x_2=0 &amp; 
+\end{align}\]</span>
+</div></li>
+</ul>
+</div>
+<div id="optimality-in-convex-optimization" class="section level2" number="3.6">
+<h2><span class="header-section-number">3.6</span> Optimality in convex optimization</h2>
+
+<div class="theorem">
+<span id="thm:global-optimality-convex" class="theorem"><strong>Theorem 3.1  </strong></span>Any local optimal point is optimal globally for a convex problem.
+</div>
+<p>One can easily prove (<a href="convex-optimization.html#thm:global-optimality-convex">3.1</a>) by contradiction.</p>
+<div id="optimality-criterion-for-differentiable-f_0" class="section level3" number="3.6.1">
+<h3><span class="header-section-number">3.6.1</span> Optimality criterion for differentiable <span class="math inline">\(f_0\)</span></h3>
+
+<div class="theorem">
+<span id="thm:optimal-criterion-differentiable" class="theorem"><strong>Theorem 3.2  </strong></span><span class="math inline">\(x\)</span> is optimal <strong>iff</strong> <span class="math inline">\(x\)</span> is feasible and
+<span class="math display" id="eq:optimal-criterion-differentiable">\[\begin{align}
+    \tag{3.7}
+    \nabla f(x)^T (y-x) \geq 0 &amp; \text{ for all feasible }y
+\end{align}\]</span>
+</div>
+<p>We have seen this before in <a href="convex-functions.html#thm:first-order-condition">2.2</a>.</p>
+
+<div class="example">
+<span id="exm:unnamed-chunk-22" class="example"><strong>Example 3.3  </strong></span>unconstrained problem: <span class="math inline">\(\nabla f(x) = 0\)</span>
+</div>
+
+<div class="example">
+<span id="exm:equality-constrained" class="example"><strong>Example 3.4  </strong></span>equality constrained problem (only <span class="math inline">\(Ax=b\)</span>):
+<span class="math inline">\(x\)</span> is optimal <strong>iff</strong> there exists <span class="math inline">\(\nu\)</span> such that
+<span class="math inline">\(x\in \mathbf{dom} f_0\)</span>, <span class="math inline">\(Ax=b\)</span>, <span class="math inline">\(\nabla f_0(x) + A^T\nu=0\)</span>
+</div>
+
+<div class="proof">
+<p> <span class="proof"><em>Proof. </em></span> Assume <span class="math inline">\(x\)</span> is the optimum.
+<span class="math inline">\(\nabla f_0(x)^T (z-x) \geq 0\)</span> for all <span class="math inline">\(z\)</span>, <span class="math inline">\(Az=b\)</span>. Also <span class="math inline">\(Ax=b\)</span>.</p>
+<p>Thus <span class="math inline">\(z-x \in \mathrm{Null}(A)\)</span>, i.e. <span class="math inline">\(\nabla f_0(x) \perp \mathrm{Null}(A)\)</span>.</p>
+<p>Consequently, <span class="math inline">\(f_0(x) \in \operatorname{im} (A^T)\)</span>,</p>
+Thus <span class="math inline">\(\nabla f_0(x) = A^Tu\)</span>, <span class="math inline">\(\nabla f_0(x) + A^T(-u) = 0\)</span>.
+</div>
+
+<div class="example">
+<p><span id="exm:minimization-nonneg-orthant" class="example"><strong>Example 3.5  </strong></span>minimization over non-negative orthant (<span class="math inline">\(R_{++}^n\)</span>):</p>
+<p><span class="math display">\[\begin{align}
+    \text{minimize}&amp; &amp; f_0(x) &amp; \\
+    \text{subject to} &amp; &amp; x \succeq 0 &amp;
+\end{align}\]</span></p>
+<span class="math inline">\(x\)</span> is optimal <strong>iff</strong>
+<span class="math display">\[\begin{align}
+    
+\end{align}\]</span>
+</div>
+
+<div class="proof">
+<p> <span class="proof"><em>Proof. </em></span> Assume <span class="math inline">\(x\)</span> is the optimum.
+<span class="math inline">\(\nabla f_0(x)^T (z-x) \geq 0\)</span> for all <span class="math inline">\(z\geq 0\)</span>.</p>
+<p>Plugging in <span class="math inline">\(z=0\)</span>, <span class="math inline">\(\nabla f(x)^Tx \leq 0\)</span>.</p>
+<p>If any of the components (<span class="math inline">\(i\)</span>-th) of <span class="math inline">\(\nabla f(x)\)</span> is negative, then we can take <span class="math inline">\(z_i\rightarrow \infty\)</span>, and LHS will be negative, thus we know that <span class="math inline">\(\nabla f(x) \geq 0\)</span>.</p>
+<p>Since <span class="math inline">\(\nabla f(x)^Tx \leq 0\)</span> and <span class="math inline">\(\nabla f(x) \geq 0\)</span>, we know that <span class="math inline">\(\nabla f(x)_i x_i = 0\)</span> for all <span class="math inline">\(i\)</span> (<strong>complementarity</strong>).</p>
+</div>
+</div>
+</div>
+<div id="equivalent-convex-problems" class="section level2" number="3.7">
+<h2><span class="header-section-number">3.7</span> Equivalent convex problems</h2>
+<p>This section is full of trickery that you will regret if you don’t know.</p>
+<div id="eliminating-equality-constraints" class="section level3" number="3.7.1">
+<h3><span class="header-section-number">3.7.1</span> eliminating equality constraints</h3>
+<p><span class="math display">\[\begin{align}
+    \text{minimize}&amp; &amp; f_0(x) &amp; &amp; \\
+    \text{subject to} &amp; &amp; f_i(x) \leq 0 &amp; , &amp; i=1,\dots,m \\
+    &amp; &amp; Ax=b &amp; &amp; 
+\end{align}\]</span>
+is equivalent to
+<span class="math display" id="eq:convex-optimization">\[\begin{align}
+    \tag{3.6}
+    \text{minimize (over z)}&amp; &amp; f_0(Fz+x_0) &amp; &amp; \\
+    \text{subject to} &amp; &amp; f_i(Fz+x_0) \leq 0 &amp; , &amp; i=1,\dots,m \\
+\end{align}\]</span>
+where <span class="math inline">\(F\)</span> and <span class="math inline">\(x_0\)</span> are such that
+<span class="math display" id="eq:eliminate-equality-constraint">\[\begin{align}
+    \tag{3.8}
+    Ax=b &amp; \Longleftrightarrow &amp; x=Fz+x_0 \text{ for some }z
+\end{align}\]</span></p>
+<p>How to get <span class="math inline">\(F\)</span> and <span class="math inline">\(x_0\)</span>? Well <span class="math inline">\(F\)</span> spans the null space of <span class="math inline">\(A\)</span>, and <span class="math inline">\(x_0\)</span> is any particular solution of <span class="math inline">\(Ax=b\)</span>.</p>
+<p>Note affine operation preserves convexity, so the eliminated problem is also convex.</p>
+<p>Boyd: An intriguing fact is that in reality not only it’s bad to eliminate constraints, it’s often a good idea to add (un-eliminate) equality constraints!</p>
+<p>Boyd: Convex problems (by definition here) only has affine equality constraints.</p>
+</div>
+<div id="introducing-equality-constraints" class="section level3" number="3.7.2">
+<h3><span class="header-section-number">3.7.2</span> Introducing equality constraints</h3>
+<p><span class="math display">\[\begin{align}
+    \text{minimize}&amp; &amp; f_0(A_0x+b_0) &amp; &amp; \\
+    \text{subject to} &amp; &amp; f_i(A_0x+b_0) \leq 0 &amp; , &amp; i=1,\dots,m \\
+\end{align}\]</span>
+is equivalent to
+<span class="math display">\[\begin{align}
+    \text{minimize over $x$, $y_i$}&amp; &amp; f_0(y_0) &amp; &amp; \\
+    \text{subject to} &amp; &amp; f_i(y_i) \leq 0 &amp; , &amp; i=1,\dots,m \\
+    &amp; &amp; y_i=A_ix+b_i &amp; &amp; i=1,\dots,m
+\end{align}\]</span></p>
+</div>
+<div id="introducing-slack-variables-for-linear-inequalities" class="section level3" number="3.7.3">
+<h3><span class="header-section-number">3.7.3</span> Introducing slack variables for linear inequalities</h3>
+<p><span class="math display">\[\begin{align}
+    \text{minimize}&amp; &amp; f_0(x) &amp; &amp; \\
+    \text{subject to} &amp; &amp; a_i^Tx \leq b_i &amp; , &amp; i=1,\dots,m \\
+\end{align}\]</span>
+is equivalent to
+is equivalent to
+<span class="math display">\[\begin{align}
+    \text{minimize over $x$, $s$}&amp; &amp; f_0(x) &amp; &amp; \\
+    \text{subject to} &amp; &amp; a_i^Tx+s_i=b_i &amp; , &amp; i=1,\dots,m \\
+    &amp; &amp; -s_i \leq 0 &amp; &amp; i=1,\dots,m
+\end{align}\]</span></p>
+<p>Boyd: this looks stupid but is actually useful.</p>
+</div>
+<div id="the-epigraph-form-trick" class="section level3" number="3.7.4">
+<h3><span class="header-section-number">3.7.4</span> The epigraph form (trick)</h3>
+<p>The standard form <a href="convex-optimization.html#eq:convex-optimization">(3.6)</a> is equivalent to
+<span class="math display">\[\begin{align}
+    \text{minimize over $x$, $t$}&amp; &amp; t &amp; &amp; \\
+    \text{subject to} &amp; &amp; f_0(x) - t \leq 0 &amp;  &amp;  \\
+                      &amp; &amp; f_i(x) \leq 0 &amp; , &amp; i=1,\dots,m \\
+    &amp; &amp; Ax=b &amp; &amp; 
+\end{align}\]</span></p>
+<p>Note that this actually converts <strong>any</strong> objective to a <strong>linear</strong> objective!</p>
+</div>
+<div id="minimizing-over-some-variables" class="section level3" number="3.7.5">
+<h3><span class="header-section-number">3.7.5</span> Minimizing over some variables</h3>
+<p><span class="math display">\[\begin{align}
+    \text{minimize}&amp; &amp; f_0(x_1, x_2) &amp; &amp; \\
+    \text{subject to} &amp; &amp; f_i(x_1)  \leq 0 &amp;  &amp; i=1,\dots,m
+\end{align}\]</span>
+is equivalent to
+<span class="math display">\[\begin{align}
+    \text{minimize}&amp; &amp; \tilde f_0(x_1) &amp; &amp; \\
+    \text{subject to} &amp; &amp; f_i(x_1)  \leq 0 &amp;  &amp; i=1,\dots,m
+\end{align}\]</span>
+where <span class="math inline">\(\tilde f_0 (x_1) = \inf_{x_2} f_0(x_1, x_2)\)</span></p>
+<p>a.k.a. dynamic programming preserves convexity.</p>
+</div>
+</div>
+<div id="dummy" class="section level2" number="3.8">
+<h2><span class="header-section-number">3.8</span> Dummy</h2>
+<p>Lorem</p>
+<p>Lorem
+Lorem</p>
+<p>Lorem</p>
+<p><span class="math inline">\(f: \mathbf R^n \rightarrow \mathbf R\)</span>
+<span class="math inline">\(f: \mathbf R^n \rightarrow \mathbf R\)</span>
+<span class="math inline">\(f: \mathbf R^n \rightarrow \mathbf R\)</span>
+<span class="math inline">\(f: \mathbf R^n \rightarrow \mathbf R\)</span></p>
+
 </div>
 </div>
             </section>
@@ -304,8 +500,8 @@ Figure 5.1: Logarithmic barrier
           </div>
         </div>
       </div>
-<a href="linear-programs.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="convex-functions.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="linear-programs.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
