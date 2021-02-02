@@ -1,4 +1,4 @@
-# Optimization Problems
+# Convex Optimization
 
 ## Optimization in standard form
 
@@ -71,7 +71,190 @@ can be actually written as
 
 ## Convex optimization
 
+\begin{align}
+    (\#eq:convex-optimization)
+    \text{minimize}& & f_0(x) & & \\
+    \text{subject to} & & f_i(x) \leq 0 & , & i=1,\dots,m \\
+    & & Ax=b & & 
+\end{align}
 
+Boyd defines convex optimization to be:
+
+* $f_i$ are all convex, equality constraints are all affine.
+* also can define quasiconvex problems where $f_0$ is quasiconvex, and $f_i (i>0)$ are convex.
+
+Note that the feasible set of a convex optimization problem is convex.
+
+```{example}
+\begin{align}
+    \text{minimize}& & f_0(x)=x_1^2+x_2^2 & \\
+    \text{subject to} & & f_i(x)=x_1/(1+x_2^2) \leq 0 &  \\
+    & & h_1(x) = (x_1 + x_2)^2=0 & 
+\end{align}
+
+* $f_0$ is convex, feasible set $\{ x_1 = -x_2 \}$ is also convex
+* *however* not a convex problem according to \@ref(eq:convex-optimization)
+* we can rewrite to equivalent (not identical) convex problem
+  \begin{align}
+    \text{minimize}& & f_0(x)=x_1^2+x_2^2 & \\
+    \text{subject to} & & x_1 \leq 0 &  \\
+    & & h_1(x) = x_1 + x_2=0 & 
+  \end{align}
+```
+
+## Optimality in convex optimization
+
+```{theorem, global-optimality-convex}
+Any local optimal point is optimal globally for a convex problem.
+```
+
+One can easily prove (\@ref(thm:global-optimality-convex)) by contradiction.
+
+### Optimality criterion for differentiable $f_0$
+
+```{theorem, optimal-criterion-differentiable}
+$x$ is optimal **iff** $x$ is feasible and
+\begin{align}
+    (\#eq:optimal-criterion-differentiable)
+    \nabla f(x)^T (y-x) \geq 0 & \text{ for all feasible }y
+\end{align}
+```
+
+We have seen this before in \@ref(thm:first-order-condition).
+
+```{example}
+unconstrained problem: $\nabla f(x) = 0$
+```
+
+```{example, equality-constrained}
+equality constrained problem (only $Ax=b$):
+$x$ is optimal **iff** there exists $\nu$ such that
+$x\in \mathbf{dom} f_0$, $Ax=b$, $\nabla f_0(x) + A^T\nu=0$
+```
+
+```{proof}
+Assume $x$ is the optimum.
+$\nabla f_0(x)^T (z-x) \geq 0$ for all $z$, $Az=b$. Also $Ax=b$.
+
+Thus $z-x \in \mathrm{Null}(A)$, i.e. $\nabla f_0(x) \perp \mathrm{Null}(A)$.
+
+Consequently, $f_0(x) \in \operatorname{im} (A^T)$,
+
+Thus $\nabla f_0(x) = A^Tu$, $\nabla f_0(x) + A^T(-u) = 0$.
+```
+
+```{example, minimization-nonneg-orthant}
+minimization over non-negative orthant ($R_{++}^n$):
+
+\begin{align}
+    \text{minimize}& & f_0(x) & \\
+    \text{subject to} & & x \succeq 0 &
+\end{align}
+
+$x$ is optimal **iff**
+\begin{align}
+    
+\end{align}
+```
+
+```{proof}
+Assume $x$ is the optimum.
+$\nabla f_0(x)^T (z-x) \geq 0$ for all $z\geq 0$.
+
+Plugging in $z=0$, $\nabla f(x)^Tx \leq 0$.
+
+If any of the components ($i$-th) of $\nabla f(x)$ is negative, then we can take $z_i\rightarrow \infty$, and LHS will be negative, thus we know that $\nabla f(x) \geq 0$.
+
+Since $\nabla f(x)^Tx \leq 0$ and $\nabla f(x) \geq 0$, we know that $\nabla f(x)_i x_i = 0$ for all $i$ (**complementarity**).
+
+```
+
+## Equivalent convex problems
+
+This section is full of trickery that you will regret if you don't know.
+
+### eliminating equality constraints
+
+\begin{align}
+    \text{minimize}& & f_0(x) & & \\
+    \text{subject to} & & f_i(x) \leq 0 & , & i=1,\dots,m \\
+    & & Ax=b & & 
+\end{align}
+is equivalent to
+\begin{align}
+    (\#eq:convex-optimization)
+    \text{minimize (over z)}& & f_0(Fz+x_0) & & \\
+    \text{subject to} & & f_i(Fz+x_0) \leq 0 & , & i=1,\dots,m \\
+\end{align}
+where $F$ and $x_0$ are such that
+\begin{align}
+    (\#eq:eliminate-equality-constraint)
+    Ax=b & \Longleftrightarrow & x=Fz+x_0 \text{ for some }z
+\end{align}
+
+How to get $F$ and $x_0$? Well $F$ spans the null space of $A$, and $x_0$ is any particular solution of $Ax=b$.
+
+Note affine operation preserves convexity, so the eliminated problem is also convex.
+
+Boyd: An intriguing fact is that in reality not only it's bad to eliminate constraints, it's often a good idea to add (un-eliminate) equality constraints!
+
+Boyd: Convex problems (by definition here) only has affine equality constraints.
+
+### Introducing equality constraints
+
+\begin{align}
+    \text{minimize}& & f_0(A_0x+b_0) & & \\
+    \text{subject to} & & f_i(A_0x+b_0) \leq 0 & , & i=1,\dots,m \\
+\end{align}
+is equivalent to
+\begin{align}
+    \text{minimize over $x$, $y_i$}& & f_0(y_0) & & \\
+    \text{subject to} & & f_i(y_i) \leq 0 & , & i=1,\dots,m \\
+    & & y_i=A_ix+b_i & & i=1,\dots,m
+\end{align}
+
+### Introducing slack variables for linear inequalities
+
+\begin{align}
+    \text{minimize}& & f_0(x) & & \\
+    \text{subject to} & & a_i^Tx \leq b_i & , & i=1,\dots,m \\
+\end{align}
+is equivalent to
+is equivalent to
+\begin{align}
+    \text{minimize over $x$, $s$}& & f_0(x) & & \\
+    \text{subject to} & & a_i^Tx+s_i=b_i & , & i=1,\dots,m \\
+    & & -s_i \leq 0 & & i=1,\dots,m
+\end{align}
+
+Boyd: this looks stupid but is actually useful.
+
+### The epigraph form (trick)
+
+The standard form \@ref(eq:convex-optimization) is equivalent to
+\begin{align}
+    \text{minimize over $x$, $t$}& & t & & \\
+    \text{subject to} & & f_0(x) - t \leq 0 &  &  \\
+                      & & f_i(x) \leq 0 & , & i=1,\dots,m \\
+    & & Ax=b & & 
+\end{align}
+
+Note that this actually converts **any** objective to a **linear** objective!
+
+### Minimizing over some variables
+
+\begin{align}
+    \text{minimize}& & f_0(x_1, x_2) & & \\
+    \text{subject to} & & f_i(x_1)  \leq 0 &  & i=1,\dots,m
+\end{align}
+is equivalent to
+\begin{align}
+    \text{minimize}& & \tilde f_0(x_1) & & \\
+    \text{subject to} & & f_i(x_1)  \leq 0 &  & i=1,\dots,m
+\end{align}
+where $\tilde f_0 (x_1) = \inf_{x_2} f_0(x_1, x_2)$
+
+a.k.a. dynamic programming preserves convexity.
 
 ## Dummy
 

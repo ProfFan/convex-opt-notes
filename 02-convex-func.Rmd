@@ -498,7 +498,7 @@ Note that \@ref(prp:log-concave-pdf) directly relates to the yield optimization 
 ```{definition, k-convex}
 $f: \mathbf R^n \rightarrow \mathbf R^m$ is $K$-convex if $\mathbf{dom} f$ is a convex set and 
 \begin{equation}
-  (\#eq:jensen-inequality)
+  (\#eq:jensen-inequality-k-convex)
   f(\theta x + (1-\theta) y) \preceq_K \theta f(x) + (1-\theta) f(y)
 \end{equation}
 for all $x, y \in \mathbf{dom} f$, $0\leq \theta \leq 1$.
