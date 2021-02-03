@@ -18,7 +18,7 @@ i.e. "Any chord is above function".
 
 ## Examples
 
-convex:
+convex example:
 
 * affine functions $ax+b$
 * exponential $e^{ax}$
@@ -340,7 +340,7 @@ are convex for all $\alpha$.
 * $f$ is quasiconcave if $-f$ is quasiconvex
 * $f$ is quasilinear if it is both quasiconvex and quasiconcave
 
-### Examples
+### Examples {#quasiconvexity-examples}
 
 * $\sqrt{|x|}$ is quasiconvex on $R$
 * $\mathrm{ceil}(x) = \inf \{ z\in Z | z \geq x \}$ is quasiconvex

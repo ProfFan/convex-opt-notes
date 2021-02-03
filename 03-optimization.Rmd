@@ -42,6 +42,7 @@ For such a description, the optimal value is defined as
 * $\mathcal D$ is called the **domain** of the problem
 * a problem is **unconstrained** if it has no *explict* constraints ($m=p=0$)
 
+
 ```{example}
 \begin{align}
 \text{minimize} & & f_0 = -\sum_{i=1}^k \log (b_i-a_i^Tx) 
@@ -100,6 +101,7 @@ Note that the feasible set of a convex optimization problem is convex.
     \text{subject to} & & x_1 \leq 0 &  \\
     & & h_1(x) = x_1 + x_2=0 & 
   \end{align}
+
 ```
 
 ## Optimality in convex optimization
@@ -153,7 +155,10 @@ minimization over non-negative orthant ($R_{++}^n$):
 
 $x$ is optimal **iff**
 \begin{align}
-    
+    x\in \mathrm{dom}f_0, & x\succeq 0, & \begin{cases}
+        \nabla f_0(x)_i \geq 0, &x_i = 0 \\
+        \nabla f_0(x)_i = 0, &x_i > 0 \\
+    \end{cases}
 \end{align}
 ```
 
@@ -182,7 +187,7 @@ This section is full of trickery that you will regret if you don't know.
 \end{align}
 is equivalent to
 \begin{align}
-    (\#eq:convex-optimization)
+    (\#eq:convex-optimization-equivalent)
     \text{minimize (over z)}& & f_0(Fz+x_0) & & \\
     \text{subject to} & & f_i(Fz+x_0) \leq 0 & , & i=1,\dots,m \\
 \end{align}
@@ -254,7 +259,315 @@ is equivalent to
 \end{align}
 where $\tilde f_0 (x_1) = \inf_{x_2} f_0(x_1, x_2)$
 
-a.k.a. dynamic programming preserves convexity.
+a.k.a. dynamic programming preserves convexity of a problem.
+
+## Quasiconvex optimization
+
+\begin{align}
+    (\#eq:quasiconvex-optimization)
+    \text{minimize}& & f_0(x) & & \\
+    \text{subject to} & & f_i(x) \leq 0 & , & i=1,\dots,m \\
+    & & Ax=b & & 
+\end{align}
+where $f_0$ is quasiconvex and $f_1, \dots, f_m$ convex.
+
+Quasiconvex functions can have locally optimal points that are not globally optimal.
+
+### Convex representation of its sublevel sets
+
+```{definition, convex-repr-quasiconvex}
+Convex representation of sublevel sets of $f_0$:
+
+If $f_0$ is quasiconvex, there exists a family of functions $\phi_t$ such that:
+
+* $\phi_t(x)$ is convex in $x$ for fixed $t$
+* $t$-sublevel set of f_0 is 0-sublevel set of $\phi_t$, *i.e.*
+  \begin{equation}
+      f_0(x)\leq t \Longleftrightarrow \phi_t(t) \leq 0
+  \end{equation}
+
+```
+
+```{example, fractional-constraint-rewrite}
+\begin{equation*}
+    f_0(x) = \frac{p(x)}{q(x)}
+\end{equation*}
+with $p\geq 0$ convex and $q>0$ concave, $f_0(x)$ is quasiconvex on $\mathrm{dom} f_0$.
+
+Thus we can take $\phi_t(x) = p(x) - tq(x)$.
+```
+
+```{proof}
+Sublevel set: $f_0(x)=p(x)/q(x)\leq t$. Thus
+\begin{align}
+    p(x)\leq tq(x) \\
+    p(x) - tq(x) \leq 0
+\end{align}
+
+Obviously $\phi_t(x)$ is convex.
+```
+
+### Quasiconvex optimization via convex feasibility problems
+
+Now that we have $\phi_t$, what can we do to solve the original problem?
+
+```{lemma, quasiconvex-opt-via-convex-feasibility}
+Quasiconvex optimization via convex feasibility problems:
+\begin{align}
+    \phi_t(x) \leq 0,& & f_i(x) \leq 0, & & i=1,\dots, m, & & Ax=b
+\end{align}
+
+* for any fixed $t$, a convex feasibility problem in $x$.
+* if feasible, then we know $t\geq p^*$, and conversely $t<p^*$ otherwise.
+```
+
+This is an oracle that enables a bisection method for quasiconvex optimization.
+
+This method bisects the given interval $[u, l]$, which requires exactly $\lceil \log_2 ((u-l)/\epsilon)\rceil$ iterations, where $\epsilon$ is the accuracy.
+
+## Linear Programs (LP)
+
+```{definition, lp}
+**Linear Program (LP)** is defined as
+\begin{align}
+    (\#eq:lp-generic)
+    \text{minimize}& & c^Tx+d & & \\
+    \text{subject to} & & Gx\preceq h & , &  \\
+    & & Ax=b & & 
+\end{align}
+
+```
+
+This is convex problem with affine objective and constraints. The feasible set is a polyhedron.
+
+Note since the level set of an affine function is a hyperplane, what you need to do is actually just move the hyperplane as far as possible while intersecting with the polyhedron.
+
+Note that even for a small LP with 10s of variables, the number of vertices of the polyhedron will be astronomical (quote Boyd).
+
+### Examples
+
+Here are some famous LPs:
+
+#### Diet problem
+
+Minimize cost of food $c$ given nutrient requirements $b$:
+\begin{align}
+  (\#eq:diet-problem)
+  \text{minimize}& & c^Tx & & \\
+    \text{subject to} & & Ax\succeq  b & , & x\succeq 0
+\end{align}
+
+#### Piecewise linear minimization
+
+\begin{align}
+    (\#eq:piecewise-linear-min)
+    \text{minimize}& & \max _{i=1,\dots,m}(a_i^Tx+b_i)
+\end{align}
+is equivalent to the LP
+\begin{align}
+    (\#eq:piecewise-linear-min-lp)
+    \text{minimize}& & t & & \\
+    \text{subject to} & & a_i^Tx+b_i \leq t & , & i=1,\dots,m.
+\end{align}
+
+Note that PWL can approximate any convex function, so this can be very useful!
+
+#### Chebyshev center of a polyhedron
+
+The Chebyshev center of a polyhedron 
+\begin{equation}
+  (\#eq:chebyshev-point-poly)
+  \mathcal P = \{ x|a_i^Tx \leq b_i \}
+\end{equation}
+is defined to be the center of a maximum sphere
+\begin{equation}
+  (\#eq:chebyshev-point-sphere)
+  \mathcal B = \{ x_c + u | \| u \|_2 \leq r \}
+\end{equation}
+inside the polyhedron (note this can be multiple such points).
+
+This is an interesting problem that, seeing a sphere will bring you immediately that this problem is nonlinear. However it is not. 
+
+Note that, $a_i^Tx \leq b_i$ for all $x \in \mathcal B$ if and only if
+\begin{equation}
+  (\#eq:chebyshev-point)
+  \sup\{ a_i^T (x_c + u) | \| u \|_2 \leq r\}  = a_i^T x_c + r \| a_i \|_2 \leq b_i
+\end{equation}
+by substituting $x = x_c+u$.
+
+Also note that this is linear in $x_c$ and $r$, so it is actually an LP:
+\begin{align}
+    (\#eq:chebyshev-point-lp)
+    \text{maximize}& & r &  & \\
+    \text{subject to} & & a_i^Tx_c + \|a_i\|_2 r \leq b_i, &  & i=1,\dots,m
+\end{align}
+
+This problem is very related to the yield maximization problem in industry production (maximizing the probability of producing an item that falls in all tolerances).
+
+This can also be generalized to other norms (where $\| \|_*$ is the dual norm of $\| \|$):
+\begin{equation}
+  (\#eq:chebyshev-point-general)
+  \sup\{ a_i^T (x_c + u) | \| u \| \leq r\}  = a_i^T x_c + r \| a_i \|_* \leq b_i
+\end{equation}
+
+### Linear-fractional program
+
+```{definition, lp-fractional}
+**Linear-fractional program** is defined as
+\begin{align}
+    (\#eq:lp-fractional)
+    \text{minimize}& & f_0(x) & & \\
+    \text{subject to} & & Gx\preceq h & , &  \\
+    & & Ax=b & & 
+\end{align}
+where $$f_0(x)=\frac{c^Tx+d}{e^Tx+f}$$, $\mathrm{dom} f_0 = \{ e^Tx+f > 0 \}$.
+
+```
+
+This is quasiconvex (quasilinear) as said in (\@ref(quasiconvexity-examples)).
+
+When the feasible set is not empty, we can transform \@ref(def:lp-fractional) to equivalent LP
+\begin{align}
+    (\#eq:lp-fractional-equiv)
+    \text{minimize}& & c^Ty+dz & & \\
+    \text{subject to} & & Gy-hz\preceq 0 & , &  \\
+    & & Ay-bz = 0 & & \\
+    & & e^Ty + fz = 1 & & \\
+    & & z \geq 0 & &
+\end{align}
+
+```{solution}
+(*My solution*) Since $f_0(x)=\frac{c^Tx+d}{e^Tx+f}$, we can introduce additional variables $y$ and $z$ such that
+\begin{align}
+    z = 1/(e^Tx + f), & & f_0(x,z) = (c^Tx +d)z \\
+    y = xz, & & f_0(y, z) = c^Ty + dz
+\end{align}
+
+Now the old set of constraints becomes fractionals $G(y/z)\preceq h$ and $A(y/z) = b$. We then apply (\@ref(exm:fractional-constraint-rewrite)), and it's easy to show the result after that.
+
+```
+
+```{solution}
+(*Boyd's solution*) Since $f_0(x)=\frac{c^Tx+d}{e^Tx+f}$, note that adding a renormalization constant $z$ does not change the solution of the problem:
+\begin{align}
+    \text{minimize}& & \frac{c^Tx+dz}{e^Tx+fz} & & \\
+    \text{subject to} & & Gx\preceq hz & , &  \\
+    & & Ax=bz & & \\
+    & & z \geq 0 & &
+\end{align}
+```
+
+### Generalized linear-fractional program
+
+```{definition, gen-lp-fractional}
+**Generalized linear-fractional program** is defined as
+\begin{align}
+    (\#eq:gen-lp-fractional)
+    f_0(x)=\max_{i=1,\dots, r} \frac{c^Tx+d}{e^Tx+f}
+\end{align}
+where $\mathrm{dom} f_0 = \{ e^Tx+f > 0 \}$.
+
+```
+
+This is a quasiconvex but not convertible to LP. Can only be solved by bisection.
+
+```{example}
+*von Neumann* model of a growing economy
+\begin{align}
+    \text{minimize} & & \min_{i=1,\dots,n} x_i^+ / x_i &\\
+    \text{subject to} & & x^+ \succeq 0, Bx^+ \preceq Ax & \\
+    & & x \geq 0 &
+\end{align}
+
+* $x,x^+ \in R^n$: activity levels of n sectors in current and next period
+* $(Ax)_i, (Bx^+)_i$: produced and consumed amounts of good $i$
+* $x^+_i/x_i$: growth rate of section $i$
+```
+
+## Quadratic programs (QP)
+
+```{definition, qp}
+**Quadratic program (QP)** is defined as
+\begin{align}
+    (\#eq:qp-generic)
+    \text{minimize}& & (1/2)x^TPx + q^Tx + r & & \\
+    \text{subject to} & & Gx\preceq h & , &  \\
+    & & Ax=b & & 
+\end{align}
+```
+
+* $P \in S_+^n$, objective is convex quadratic
+* We are currently in the 1950s (lol)
+
+```{remark}
+If $P$ is not positive semidefinite, then the problem becomes NP-hard!
+```
+
+### Examples
+
+```{example}
+**least-squares**:
+\begin{equation*}
+    \min . \| Ax-b \|^2_2
+\end{equation*}
+which has analytical solution (pseudoinverse) $x^* = A^\dagger b$.
+You can also add linear constraints like $l\preceq x \preceq u$, and that is **just** a QP.
+```
+
+```{example}
+**linear program with random cost**: (variant of the diet problem \@ref(eq:diet-problem))
+\begin{align*}
+    \min . & & \bar c^T x + \gamma x^T\Sigma x = \mathbb{E} c^Tx + \gamma \mathbb{var}(c^Tx) \\
+    s.t. & & Gx \preceq h, Ax=b
+\end{align*}
+$\gamma > 0$ risk-factor.
+```
+
+## Quadratically constrained QP (QCQP)
+
+```{definition, qcqp}
+**Quadratic program (QP)** is defined as
+\begin{align}
+    (\#eq:qp-generic)
+    \text{minimize}& & (1/2)x^TP_0x + q_0^Tx + r_0 & & \\
+    \text{subject to} & & (1/2)x^TP_ix + q_i^Tx + r_i \leq 0& , & i=1,\dots,m \\
+    & & Ax=b & & 
+\end{align}
+```
+
+* $P_i \in S_+^n$, objective and constraints are convex quadratic
+* if $P_i \in S_{++}^n$ problem becomes degenerative ellipisoids
+
+## Second-order cone programming (SOCP)
+
+```{definition, second-order-cone-program}
+**Second-order cone program** is defined as
+\begin{align}
+    (\#eq:socp-generic)
+    \text{minimize}& & f^Tx & & \\
+    \text{subject to} & & \|A_ix+b_i\|_2\leq c_i^Tx+d_i 0& , & i=1,\dots,m \\
+    & & Fx=g & & 
+\end{align}
+($A_i\in R^{n_i\times n}$, $F\in R^{p\times n}$)
+```
+
+* inequalities are called SOC constraints:
+  \begin{equation*}
+      (A_ix+b_i, c_i^Tx+d_i)\in \underbrace{\text{ second-order cone }}_\text{Lorenz cone}\text{ in } R^{n_i+1}
+  \end{equation*}
+* more general than QCQP and LP
+
+```{remark}
+If we rewrite $\|A_ix+b_i\|_2\leq c_i^Tx+d_i$ to the "standard" form, i.e.
+$f_i(x) = \|A_ix+b_i\|_2 - c_i^Tx-d_i$, you will discover that $f_i$ is not differentiable at 0.
+
+Note that obviously a lot of the $x_i$s can be zero, so this **does** matter!
+
+```
+
+## Robust linear programming
+
+
 
 ## Dummy
 

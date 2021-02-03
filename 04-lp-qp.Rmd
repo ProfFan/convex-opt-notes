@@ -1,47 +1,15 @@
-# Linear Programs
+# Linear Programming
 
-Here are some famous LPs:
+## Dummy
 
-## Piecewise linear minimization
+Lorem
 
-\begin{align}
-    (\#eq:piecewise-linear-min)
-    \text{minimize}& & \max _{i=1,\dots,m}(a_i^Tx+b_i)
-\end{align}
-is equivalent to the LP
-\begin{align}
-    (\#eq:piecewise-linear-min-lp)
-    \text{minimize}& & t & & \\
-    \text{subject to} & & a_i^Tx+b_i \leq t & , & i=1,\dots,m.
-\end{align}
+Lorem
+Lorem
 
-Note that PWL can approximate any function, so this can be very useful!
+Lorem
 
-
-## Chebyshev center of a polyhedron
-
-The Chebyshev center of a polyhedron 
-\begin{equation}
-  (\#eq:chebyshev-point-poly)
-  \mathcal P = \{ x|a_i^Tx < b_i \}
-\end{equation}
-is defined to be the center of a maximum sphere
-\begin{equation}
-  (\#eq:chebyshev-point-sphere)
-  \mathcal B = \{ x_c + u | \| u \|_2 \leq r \}
-\end{equation}
-inside the polyhedron (note this can be multiple such points).
-
-Furthermore, $a_i^Tx \leq b_i$ for all $x \in \mathcal B$ if and only if
-\begin{equation}
-  (\#eq:chebyshev-point)
-  \sup\{ a_i^T (x_c + u) | \| u \|_2 \leq r\}  = a_i^T x_c + r \| a_i \|_2 \leq b_i
-\end{equation}
-
-This is actually an LP:
-\begin{align}
-    (\#eq:chebyshev-point-lp)
-    \text{maximize}& & r &  & \\
-    \text{subject to} & & a_i^Tx_c + \|a_i\|_2 r \leq b_i, &  & i=1,\dots,m
-\end{align}
-
+$f: \mathbf R^n \rightarrow \mathbf R$
+$f: \mathbf R^n \rightarrow \mathbf R$
+$f: \mathbf R^n \rightarrow \mathbf R$
+$f: \mathbf R^n \rightarrow \mathbf R$
