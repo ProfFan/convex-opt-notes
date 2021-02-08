@@ -545,7 +545,7 @@ $\gamma > 0$ risk-factor.
 \begin{align}
     (\#eq:socp-generic)
     \text{minimize}& & f^Tx & & \\
-    \text{subject to} & & \|A_ix+b_i\|_2\leq c_i^Tx+d_i 0& , & i=1,\dots,m \\
+    \text{subject to} & & \|A_ix+b_i\|_2\leq c_i^Tx+d_i & , & i=1,\dots,m \\
     & & Fx=g & & 
 \end{align}
 ($A_i\in R^{n_i\times n}$, $F\in R^{p\times n}$)
@@ -566,6 +566,142 @@ Note that obviously a lot of the $x_i$s can be zero, so this **does** matter!
 ```
 
 ## Robust linear programming
+
+The parameters in an LP can be uncertain. Assuming that there are variations in $c$, $a_i$ and $b_i$.
+\begin{align}
+    \text{minimize}& & c^Tx & & \\
+    \text{subject to} & & a_i^Tx\leq b_i & , &
+\end{align}
+
+### Approaches (Historical)
+
+#### Deterministic model
+
+\begin{align}
+    (\#eq:robust-lp-deterministic)
+    \text{minimize}& & c^Tx & & \\
+    \text{subject to} & & a_i^Tx\leq b_i \text{ for all } a_i\in \mathcal E_i & , &
+\end{align}
+
+#### Stochastic model
+
+\begin{align}
+    (\#eq:robust-lp-stochastic)
+    \text{minimize}& & c^Tx & & \\
+    \text{subject to} & & \mathbf{prob}(a_i^Tx\leq b_i) \geq \eta & , &
+\end{align}
+
+### Deterministic approach via SOCP
+
+We can choose an ellipsoid as $\mathcal E_i$:
+\begin{align*}
+    \mathcal E_i = \{ \bar a_i + P_i u | \| u \|_2 \leq 1 \} & & (\bar a_i \in R^n, P_i \in R^{n\times n})
+\end{align*}
+
+center is $\bar a_i$, semi-axes are determined by singular vectors of $P_i$.
+
+Then \@ref(eq:robust-lp-deterministic) is equivalent to SOCP:
+\begin{align}
+    \text{minimize}& & c^Tx & & \\
+    \text{subject to} & & \bar a_i^Tx + \| P_i^Tx \|_2 \leq b_i & , &
+\end{align}
+
+```{proof}
+Substituting $a_i = \bar a_i + P_i u$, we have
+\begin{equation*}
+    (\bar a_i + P_iu)^Tx \leq b_i \\
+    \sup_{\|u\|_2\leq 1} (\bar a_i + P_iu)^Tx \leq b_i \\
+    \bar a_i^Tx + u^T(P_i^Tx) \leq b_i \\
+    \bar a_i^Tx + \|P_i^Tx\|_2 \leq b_i
+\end{equation*}
+
+```
+
+### Stochastic Approach via SOCP
+
+Assuming $a_i \sim \mathcal N (\bar a_i, \Sigma_i)$. Then $a_i^Tx\sim \mathcal N (\bar a_i^Tx, x^T\Sigma_i x)$.
+\begin{equation}
+    \mathbf{prob}(a_i^Tx \leq b_i) = \Phi \left (  \frac{b_i - \bar a_i^Tx}{\| \Sigma_i^{1/2} \|_2} \right )
+\end{equation}
+
+Then, when $\eta \geq 1/2$ (risk aversion), the robust LP in \@ref(eq:robust-lp-stochastic) is equivalent to the SOCP
+\begin{align}
+    \text{minimize}& & c^Tx & & \\
+    \text{subject to} & & \bar a_i^Tx + \Phi^{-1}(\eta)\| \Sigma_i^{1/2}x \|_2 \leq b_i & , &
+\end{align}
+
+## Geometric Program
+
+```{definition, gp-monomial}
+An monomial function (in GP!) is 
+\begin{align*}
+    f(x) = cx_i^{a_1}\dots x_n^{a_n},& & \mathbf{dom} f = R_{++}^n
+\end{align*}
+
+$c>0$; $a_i$ can be **any real number**.
+```
+
+```{definition, posynomial}
+A posynomial function is the s um of (GP) monomials.
+```
+
+```{definition, geometric-program}
+**Geometric Program**:
+\begin{align}
+    (\#eq:geometric-program)
+    \text{minimize}& & f_0(x) & & \\
+    \text{subject to} & & f_i(x)\leq 1 & , & \\
+     & & h_i(x) = 1 & &
+\end{align}
+with $f_i$ posynomial, $h_i$ monomial.
+
+```
+
+GPs are not convex at all, e.g. minimizing $\sqrt x$!
+
+### GP in convex form
+
+Since everything here is positive, we can take the log by $y_i=\log x_i$, and log of all cost and constraints:
+
+Monomials become
+\begin{align*}
+    \log f(e^{y_1}\dots e^{y_n}) = a^Ty+b ,& & b = \log c.
+\end{align*}
+
+Posynomials become
+\begin{align*}
+    \log f(e^{y_1}\dots e^{y_n}) = \log(\sum_{k=1}^K e^{a_k^Ty+b_k}) ,& & b_k = \log c_k.
+\end{align*}
+
+Now it can be transformed into a convex problem:
+
+\begin{align}
+    (\#eq:geometric-program-converted)
+    \text{minimize}& & \log(\sum_{k=1}^K e^{a_{0k}^Ty+b_{0k}}) & & \\
+    \text{subject to} & & \log(\sum_{k=1}^K e^{a_{ik}^Ty+b_{ik}})\leq 0 & , & \\
+     & & Gy+d = 0 & &
+\end{align}
+
+### Minimizing spectral radius of a nonnegative matrix
+
+```{definition, frobenius-norm}
+**Perron-Frobenius eigenvalue** $\lambda_{pf}(A)$
+
+* exists for (elementwise) positive $A\in R^{n\times n}$
+* it's a real, positive eigenvalue of $A$, equal to spectral radius $\max_i | \lambda_i(A) |$
+* determines asymptotic growth rate of $A^k$: $A^k \sim \lambda_{pf}^k$ as $k\rightarrow \infty$
+* $\lambda_{pf}(A) = \inf \{ \lambda | Av \preceq \lambda v \text{ for some } v \succ 0 \}$
+```
+
+It turns out that we can minimize the spectral radius of a matrix of posynomials, i.e., minimize $\lambda_{pf}(A(x))$, where the elements of $A(x)$ are posynomials of $x$. The equivalent geometric program is
+
+\begin{align}
+    (\#eq:spectral-radius-geometric-program)
+    \text{minimize}& & \lambda & & \\
+    \text{subject to} & & \sum_{j=1}^n A(x)_{ij} v_j / (\lambda v_i) \leq 1 & , & i = 1,\dots, n
+\end{align}
+
+## Generalized inequality constraints
 
 
 
