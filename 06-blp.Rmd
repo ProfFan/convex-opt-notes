@@ -1,0 +1,173 @@
+# LP Relaxation
+
+Reading notes on Kolmogorov14.
+
+Taxnomy:
+
+* Language $\Gamma$: set of cost functions of different arities.
+* Cost function $f: D^m \rightarrow \bar{\mathbb{Q}}$.
+* Labelling: arguments of $f$.
+
+
+## Basic LP relaxation (BLP)
+
+Let $\mathbb M_n$ be the probability distributions over labellings in $D^n$, i.e. $\mathbb M_n = \{ \mu \geq 0 | \sum_{x\in D^n} \mu(x) = 1\}$. We also denote $\Delta = \mathbb M_1$, which is the standard $(|D| - 1)$-dimensional simplex. The corners of $\Delta$ can be identified with elements in $D$. For a distribution $\mu \in \mathbb M_n$ and a variable $v\in \{1,\dots, n \}$ let $\mu_{[v]}\in\Delta$ be the marginal probability of distribution $\mu$ for $v$:
+\begin{align}
+    \mu_{[v]}(a) = \sum_{x\in D^n: x_v = a} \mu(x) & & \forall a \in D.
+\end{align}
+
+Given an instance $\mathcal I$ of an VCSP, the BLP is defined as:
+\begin{align}
+    (\#eq:blp-definition)
+    \text{minimize} & & \sum_{t\in T} \sum_{x\in \mathbf{dom} f_t} \mu_t(x) f_t(x) \\
+    \text{s.t. }(\mu_t)_{[k]} = \alpha_{v(t,k)} &  & \forall t \in T, k\in \{1,\dots,n_t\} \\
+    \mu_t \in \mathbb M_{n_t} & & \forall t\in T \\
+    \mu_t(x) = 0 & & \forall t\in T,x\notin \mathbf{dom} f_t \\
+    \alpha_v \in \Delta & & \forall v\in V
+\end{align}
+
+### Explanation
+
+If there is not a feasible solution the result of BLP is $\infty$. Note that all constraints in this system are linear, thus this is indeed an LP.
+
+In human language: VCSP is CSP with a minimization target $f$. BLP tries to solve it by minimizing the expectation of $f_t(x)$ on $x$ for all term $t$s in $T$ (terms of $f_{\mathcal I}$).
+
+Questions:
+
+* What is $\alpha$?
+
+## BLP with Factor Graphs
+
+(From Frank's notebook)
+
+Take the problem $$(A \lor  B) \land (A \implies C) \land (B \land C)$$.
+
+```{python}
+import cvxpy as cp
+import numpy as np
+```
+
+### Gotchas installing cvxpy
+
+If `pip install cvxpy` fails with a message saying that some functions are undefined, and you are using macOS, you probably has `suitesparse` installed with `brew`. Run `brew unlink suitesparse` to unlink first, install using `pip`, and then `brew link suitesparse`.
+
+### Basic BLP
+
+```{python}
+ab = cp.Variable(4) # models p(a,b), corresponds to A OR B
+ac = cp.Variable(4) # models p(a,c), corresponds to A IMPLIES C
+bc = cp.Variable(4) # models p(b,c), corresponds to B AND C
+```
+
+```{python}
+domain_constraints = []
+for joint in [ab,ac,bc]:
+  domain_constraints.extend([joint>=0, joint<=1, cp.sum(joint)==1])
+```
+
+List of current constraints:
+
+```{python, echo = FALSE, warning=FALSE}
+for i in domain_constraints:
+    print(i)
+```
+
+Here the order is for AB, i.e. $00 = \{A=0,B=0\}$.
+Taking the first component means $0\rightarrow[00,01]$, $1\rightarrow[10,11]$, thus:
+```{python}
+# Assume order is 00,01,10,11
+agreements = []
+FIRST = np.array([[1,1,0,0],[0,0,1,1]]) # extracts marginals on A and C
+SECOND = np.array([[1,0,1,0],[0,1,0,1]]) # marginals on 
+agreements.append(FIRST  @ ab == FIRST  @ ac) # replaces A variable
+agreements.append(SECOND @ ab == FIRST  @ bc) # replaces B variable
+agreements.append(SECOND @ ac == SECOND @ bc) # replaces C variable
+```
+
+Current agreements:
+```{python, echo = FALSE, warning=FALSE}
+for i in agreements:
+    print(i)
+```
+
+Ok, now the logical relationships - these below are truth tables:
+```{python}
+# Assume order is 00,01,10,11
+OR = np.array([0,1,1,1])
+IMPLIES = np.array([1,1,0,1])
+AND = np.array([0,0,0,1])
+objective = cp.Maximize(OR @ ab + IMPLIES @ ac + AND @ bc)
+```
+
+And we can now solve the relaxed problem:
+```{python}
+def solve(objective):
+  prob = cp.Problem(objective, domain_constraints + agreements)
+  result = prob.solve()
+  for name,joint in zip(["AB","AC","BC"],[ab,ac,bc]):
+    print("\njoint on", name)
+    print(np.round(joint.value,2))
+    print("marginals for", name[0], "and", name[1],":")
+    print(name[0], np.round(FIRST @ joint.value,2))  
+    print(name[1], np.round(SECOND @ joint.value,2))
+
+solve(objective)
+```
+
+Looking at the results above, we can see that it has correctly identified the fact that $B=1$, $C=1$ and $A$ can be either 0 or 1.
+
+### Randomized Rounding
+
+However, it is NOT obvious to interpret the results of the relaxed problem, for example for the following problem:
+```{python}
+solve(cp.Maximize(OR @ ab + OR @ ac + OR @ bc))
+```
+
+How could we tell which values are actually valid? We could sample from the probability distributions and check if the constraint is satisfied, however this is not practical for big problems.
+
+### Higher-order cliques for better relaxations
+
+Note that the problem we have here is partially linked to the fact that we are only using a 2x2 joint distribution, which does not reflect the ternary dependencies. We can instead use a 2x2x2 joint $abc$:
+```{python}
+abc=cp.Variable(8)
+constraints = [abc>=0, abc<=1, cp.sum(abc)==1]
+# assume 000 001 010 011 100 101 110 111
+A_OR_B = np.array([0,0,1,1, 1,1,1,1]) # 00* is invalid
+A_IMPLIES_C = np.array([1,1,1,1, 0,1,0,1]) # 1*0 is invalid
+B_IMPLIES_C = np.array([1,1,0,1, 1,1,0,1]) # *10 is invalid
+objective = cp.Maximize(A_OR_B @ abc + A_IMPLIES_C @ abc + B_IMPLIES_C @ abc)
+prob = cp.Problem(objective, constraints)
+result = prob.solve()
+ABC=abc.value.reshape([2,2,2])
+print(np.round(abc.value,2))
+```
+
+This gives us 3 solutions: 011, 101, 111.
+
+The marginals are given by
+```{python}
+print("A",np.round(np.sum(abc.value*[0,0,0,0,1,1,1,1]),2))
+print("B",np.round(np.sum(abc.value*[0,0,1,1,0,0,1,1]),2))
+print("C",np.round(np.sum(abc.value*[0,1,0,1,0,1,0,1]),2))
+```
+
+```{python}
+rng = np.random.default_rng()
+for _ in range(10):
+  A,B,C = rng.binomial(1,[0.67, 0.67, 1.0]).astype(np.int)
+  print(A,B,C, int((A or B) and ((not A) or C) and ((not B) or C)))
+```
+
+Maybe we can sample better by identifying higher-level joints?
+
+## DQCP
+
+Frank's notes say the problem is not DQCP. I think I need to first learn Boyd (covered SOCP) and the DCP ruleset stuff.
+
+http://ask.cvxr.com/t/why-isnt-cvx-accepting-my-model-read-this-first/570
+
+AMPL / GAMS (both are paid commercial software)
+
+## Dummy
+
+tttt
