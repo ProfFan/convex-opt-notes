@@ -7,11 +7,12 @@ Taxnomy:
 * Language $\Gamma$: set of cost functions of different arities.
 * Cost function $f: D^m \rightarrow \bar{\mathbb{Q}}$.
 * Labelling: arguments of $f$.
+* Terms: $T$.
 
 
 ## Basic LP relaxation (BLP)
 
-Let $\mathbb M_n$ be the probability distributions over labellings in $D^n$, i.e. $\mathbb M_n = \{ \mu \geq 0 | \sum_{x\in D^n} \mu(x) = 1\}$. We also denote $\Delta = \mathbb M_1$, which is the standard $(|D| - 1)$-dimensional simplex. The corners of $\Delta$ can be identified with elements in $D$. For a distribution $\mu \in \mathbb M_n$ and a variable $v\in \{1,\dots, n \}$ let $\mu_{[v]}\in\Delta$ be the marginal probability of distribution $\mu$ for $v$:
+Let $\mathbb M_n$ be the probability distributions over labellings in $D^n$ (labellings of arity $n$), i.e. $\mathbb M_n = \{ \mu \geq 0 | \sum_{x\in D^n} \mu(x) = 1\}$. We also denote $\Delta = \mathbb M_1$, which is the standard $(|D| - 1)$-dimensional simplex. The corners of $\Delta$ can be identified with elements in $D$. For a distribution $\mu \in \mathbb M_n$ and a variable $v\in \{1,\dots, n \}$ let $\mu_{[v]}\in\Delta$ be the marginal probability of distribution $\mu$ for $v$:
 \begin{align}
     \mu_{[v]}(a) = \sum_{x\in D^n: x_v = a} \mu(x) & & \forall a \in D.
 \end{align}
@@ -28,6 +29,17 @@ Given an instance $\mathcal I$ of an VCSP, the BLP is defined as:
 
 ### Explanation
 
+* minimize the expected value of the sum of all costs
+* such that
+* $(\mu_t)_{[k]} = \alpha_{v(t,k)}, \forall t \in T, k\in \{1,\dots,n_t\}$.
+  * probability of the component of term $t$ with arity $k$ is defined as $\alpha_{v(t,k)}$.
+* $\mu_t \in \mathbb M_{n_t} \forall t\in T$
+  * $\mu_t$ is a probability distribution
+* $\mu_t(x) = 0 \forall t\in T,x\notin \mathbf{dom} f_t$
+  * the probability is zero for all $x$ not in the domain of $f$
+* $\alpha_v \in \Delta \forall v\in V$
+  * all probabilities for single variables are inside of the simplex
+
 If there is not a feasible solution the result of BLP is $\infty$. Note that all constraints in this system are linear, thus this is indeed an LP.
 
 In human language: VCSP is CSP with a minimization target $f$. BLP tries to solve it by minimizing the expectation of $f_t(x)$ on $x$ for all term $t$s in $T$ (terms of $f_{\mathcal I}$).
@@ -35,6 +47,19 @@ In human language: VCSP is CSP with a minimization target $f$. BLP tries to solv
 Questions:
 
 * What is $\alpha$?
+* $\alpha_v$ are the vertices of the simplex $\Delta$?
+
+### Fractional polymorphisms
+
+Fractional operations: operations that guarantee 1-norm of 1.
+
+Superposition: do $h$ on all $n$ $g_i(x_1,\dots, x_m)$s.
+
+### Finding the solution
+
+Idea: iterate labels in the first variable of $\mathcal I$ and test if the reduced problem has the same optimum as $\mathcal I$.
+
+Q: This does not make sense
 
 ## BLP with Factor Graphs
 
@@ -167,6 +192,10 @@ Frank's notes say the problem is not DQCP. I think I need to first learn Boyd (c
 http://ask.cvxr.com/t/why-isnt-cvx-accepting-my-model-read-this-first/570
 
 AMPL / GAMS (both are paid commercial software)
+
+## MMAE with BLP
+
+How to do VCSP instead of CSP with BLP? Still wanna finish Kolmogorov14 notes so I understand everything.
 
 ## Dummy
 
