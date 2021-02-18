@@ -703,6 +703,42 @@ It turns out that we can minimize the spectral radius of a matrix of posynomials
 
 ## Generalized inequality constraints
 
+```{definition, convex-generalized-ineq}
+**convex problem with generalized inequality constraints**: 
+\begin{align}
+    \text{minimize}& & f_0(x) & & \\
+    \text{subject to} & & f_i(x)\preceq_{K_i} 0 & , & i = 1,\dots, n \\
+     & & Ax=b & & 
+\end{align}
+
+$f_0$ convex, $f_i: R^n \rightarrow R^{K_i}$ $K_i$-convex w.r.t. proper cone $K_i$.
+
+```
+
+\@ref(def:convex-generalized-ineq) has same properties as the standard convex problem (convex feasible set, local optimum is global, etc.)
+
+```{definition, conic-form-problem}
+**conic form problem**: special case with affine objective and constraints
+\begin{align}
+    \text{minimize}& & c^Tx& & \\
+    \text{subject to} & & Fx+g\preceq_{K} 0 & & \\
+     & & Ax=b & & 
+\end{align}
+
+which extends linear programming ($K=R^m_+$) to nonpolyhedral cones.
+
+```
+
+## Semidefinite program (SDP)
+
+```{definition, semidefinite-program}
+**semidefinite program**: 
+\begin{align}
+    \text{minimize}& & c^Tx & & \\
+    \text{subject to} & & x_1F_1+\dots + x_nF_n +G \preceq 0 & & \\
+     & & Ax=b & & 
+\end{align}
+```
 
 
 ## Dummy
