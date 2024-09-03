@@ -319,6 +319,7 @@ Quasiconvex optimization via convex feasibility problems:
 
 * for any fixed $t$, a convex feasibility problem in $x$.
 * if feasible, then we know $t\geq p^*$, and conversely $t<p^*$ otherwise.
+
 ```
 
 This is an oracle that enables a bisection method for quasiconvex optimization.
@@ -482,6 +483,7 @@ This is a quasiconvex but not convertible to LP. Can only be solved by bisection
 * $x,x^+ \in R^n$: activity levels of n sectors in current and next period
 * $(Ax)_i, (Bx^+)_i$: produced and consumed amounts of good $i$
 * $x^+_i/x_i$: growth rate of section $i$
+
 ```
 
 ## Quadratic programs (QP)
@@ -494,6 +496,7 @@ This is a quasiconvex but not convertible to LP. Can only be solved by bisection
     \text{subject to} & & Gx\preceq h & , &  \\
     & & Ax=b & & 
 \end{align}
+
 ```
 
 * $P \in S_+^n$, objective is convex quadratic
@@ -528,7 +531,7 @@ $\gamma > 0$ risk-factor.
 ```{definition, qcqp}
 **Quadratic program (QP)** is defined as
 \begin{align}
-    (\#eq:qp-generic)
+    (\#eq:qcqp-generic)
     \text{minimize}& & (1/2)x^TP_0x + q_0^Tx + r_0 & & \\
     \text{subject to} & & (1/2)x^TP_ix + q_i^Tx + r_i \leq 0& , & i=1,\dots,m \\
     & & Ax=b & & 
@@ -691,6 +694,7 @@ Now it can be transformed into a convex problem:
 * it's a real, positive eigenvalue of $A$, equal to spectral radius $\max_i | \lambda_i(A) |$
 * determines asymptotic growth rate of $A^k$: $A^k \sim \lambda_{pf}^k$ as $k\rightarrow \infty$
 * $\lambda_{pf}(A) = \inf \{ \lambda | Av \preceq \lambda v \text{ for some } v \succ 0 \}$
+
 ```
 
 It turns out that we can minimize the spectral radius of a matrix of posynomials, i.e., minimize $\lambda_{pf}(A(x))$, where the elements of $A(x)$ are posynomials of $x$. The equivalent geometric program is

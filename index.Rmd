@@ -33,6 +33,6 @@ To compile this example to PDF, you need XeLaTeX. You are recommended to install
 #   .packages(), 'bookdown', 'knitr', 'rmarkdown'
 # ), 'packages.bib')
 knitr::opts_chunk$set(engine.path = list(
-  python = '/usr/local/bin/python3'
+  python = '.venv/bin/python'
 ))
 ```

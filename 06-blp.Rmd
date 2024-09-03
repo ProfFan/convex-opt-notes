@@ -179,7 +179,7 @@ print("C",np.round(np.sum(abc.value*[0,1,0,1,0,1,0,1]),2))
 ```{python}
 rng = np.random.default_rng()
 for _ in range(10):
-  A,B,C = rng.binomial(1,[0.67, 0.67, 1.0]).astype(np.int)
+  A,B,C = rng.binomial(1,[0.67, 0.67, 1.0]).astype(int)
   print(A,B,C, int((A or B) and ((not A) or C) and ((not B) or C)))
 ```
 

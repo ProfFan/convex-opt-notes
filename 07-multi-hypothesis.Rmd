@@ -1,0 +1,9 @@
+# Multi-Hypothesis Inference
+
+## Introduction
+
+Multi-hypothesis inference is the problem when you have a discrete process variable that depends on the current estimate. This dependency makes the problem hard-to-solve because of the exponential explosion of the number of total hypotheses. In a non-probabilistic sense, i.e., traditional optimization literature, such problems are usually categorized as Mixed Integer Convex Programming (MICP).
+
+Although MICP problems in general are known to be NP-hard, our formulation has some distinct properties that makes it solvable. First, we only consider chain-like problems where the current set of variables is only dependent on the previous set. Second, because of the chain-like structure, we can effectively apply branch-and-bound techniques to eliminate most of the "less-feasible" discrete combinations. This branch-and-bounding is further backed with the probabilistic formulation of the problem to be solved, which allows us to calculate and compare the probabilities of the hypotheses, even when they are normally uncomparable because they are induced by different processes selected by the discrete variable.
+
+This formulation allows for both online (filter-like) and offline operation, which is extremely important for robotic applications.
